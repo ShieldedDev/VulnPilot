@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}VAPT Scanner{% endblock %}</title>
+    <title>{% block title %}VulnPilot{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
@@ -12,8 +12,8 @@
 {% if session.user_id %}
 <nav class="navbar">
     <div class="nav-brand">
-        <span class="nav-logo">⚡</span>
-        <span class="nav-title">VAPT Scanner</span>
+        <span class="nav-mark">VP</span>
+        <span class="nav-title">VulnPilot</span>
     </div>
     <ul class="nav-links">
         <li><a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">

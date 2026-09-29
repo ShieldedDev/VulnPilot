@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Scan Results — VAPT Scanner{% endblock %}
+{% block title %}Scan Results — VulnPilot{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}">
@@ -8,13 +8,13 @@
 {% block content %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">VAPT Report</h1>
+        <h1 class="page-title">Assessment Report</h1>
         <p class="page-subtitle">Target: <strong>{{ scan.target }}</strong> · {{ scan.created_at }}</p>
     </div>
     <div class="header-actions">
-        <a href="{{ url_for('download_pdf', scan_id=scan.id) }}" class="btn-danger">⬇ PDF Report</a>
-        <a href="{{ url_for('download_json', scan_id=scan.id) }}" class="btn-secondary">⬇ JSON Report</a>
-        <a href="{{ url_for('scan') }}" class="btn-primary">+ New Scan</a>
+        <a href="{{ url_for('download_pdf', scan_id=scan.id) }}" class="btn-danger">PDF Report</a>
+        <a href="{{ url_for('download_json', scan_id=scan.id) }}" class="btn-secondary">JSON Report</a>
+        <a href="{{ url_for('scan') }}" class="btn-primary">New Scan</a>
     </div>
 </div>
 
@@ -60,7 +60,7 @@
 <div class="tab-content active" id="tab-recon">
     {% set tech = results.get('tech', {}) %}
     <div class="result-section">
-        <h3 class="section-title">🔍 Technology Detection</h3>
+        <h3 class="section-title">Technology Detection</h3>
         <div class="info-grid">
             <div class="info-item"><span class="info-label">Server</span><span class="info-value">{{ tech.get('server', 'Unknown') }}</span></div>
             <div class="info-item"><span class="info-label">Powered By</span><span class="info-value">{{ tech.get('powered_by', 'N/A') or 'N/A' }}</span></div>
@@ -83,7 +83,7 @@
 
     {% set crawl = results.get('crawl', {}) %}
     <div class="result-section">
-        <h3 class="section-title">🕷️ Web Crawler Results</h3>
+        <h3 class="section-title">Web Crawler Results</h3>
         <div class="meta-row">
             <span class="meta-tag">Pages Crawled: {{ crawl.get('pages_crawled', 0) }}</span>
             <span class="meta-tag">Links Found: {{ crawl.get('links', [])|length }}</span>
@@ -100,7 +100,7 @@
 
     {% set dirs = results.get('dirs', {}) %}
     <div class="result-section">
-        <h3 class="section-title">📁 Directory Fuzzing</h3>
+        <h3 class="section-title">Directory Fuzzing</h3>
         <div class="meta-row">
             <span class="meta-tag">Checked: {{ dirs.get('total_checked', 0) }}</span>
             <span class="meta-tag">Found: {{ dirs.get('found', [])|length }}</span>
@@ -124,7 +124,7 @@
 
     {% set subs = results.get('subdomains', {}) %}
     <div class="result-section">
-        <h3 class="section-title">🌐 Subdomain Discovery</h3>
+        <h3 class="section-title">Subdomain Discovery</h3>
         <p class="section-meta">Checked {{ subs.get('checked', 0) }} common subdomains for {{ subs.get('base_domain', '') }}</p>
         {% if subs.get('found') %}
         <table class="data-table">
@@ -145,7 +145,7 @@
 <div class="tab-content" id="tab-enum">
     {% set ports = results.get('ports', {}) %}
     <div class="result-section">
-        <h3 class="section-title">🔌 Port Scan Results</h3>
+        <h3 class="section-title">Port Scan Results</h3>
         <div class="info-grid">
             <div class="info-item"><span class="info-label">Host</span><span class="info-value">{{ ports.get('host', 'N/A') }}</span></div>
             <div class="info-item"><span class="info-label">IP Address</span><span class="info-value">{{ ports.get('ip', 'N/A') }}</span></div>
@@ -164,7 +164,7 @@
     {% set services = results.get('services', {}) %}
     {% if services %}
     <div class="result-section">
-        <h3 class="section-title">⚙️ Service Enumeration & Banner Grabbing</h3>
+        <h3 class="section-title">Service Enumeration & Banner Grabbing</h3>
         <table class="data-table">
             <thead><tr><th>Port</th><th>Service</th><th>Risk</th><th>Banner</th></tr></thead>
             <tbody>
@@ -183,7 +183,7 @@
 
     {% set os = results.get('os', {}) %}
     <div class="result-section">
-        <h3 class="section-title">💻 OS Detection</h3>
+        <h3 class="section-title">OS Detection</h3>
         <div class="info-grid">
             <div class="info-item"><span class="info-label">OS Detected</span><span class="info-value">{{ os.get('os', 'Unknown') }}</span></div>
             <div class="info-item"><span class="info-label">Confidence</span><span class="info-value">{{ os.get('confidence', 'Low') }}</span></div>
@@ -203,10 +203,7 @@
     {% for vuln_type, key in [('XSS Testing', 'xss'), ('SQL Injection', 'sqli'), ('IDOR Testing', 'idor')] %}
     {% set vdata = results.get(key, {}) %}
     <div class="result-section">
-        <h3 class="section-title">
-            {% if key == 'xss' %}⚡{% elif key == 'sqli' %}💉{% else %}🔓{% endif %}
-            {{ vuln_type }}
-        </h3>
+        <h3 class="section-title">{{ vuln_type }}</h3>
         {% if vdata.get('findings') %}
             {% for f in vdata.get('findings', []) %}
             {% if f.get('severity') != 'Info' %}
@@ -221,7 +218,7 @@
                 {% if f.get('payload') %}<div class="vuln-detail"><strong>Payload:</strong> <code>{{ f.payload }}</code></div>{% endif %}
                 {% if f.get('evidence') %}<div class="vuln-detail"><strong>Evidence:</strong> {{ f.evidence }}</div>{% endif %}
                 {% if f.get('parameter') %}<div class="vuln-detail"><strong>Parameter:</strong> {{ f.parameter }}</div>{% endif %}
-                {% if f.get('remediation') %}<div class="vuln-remediation">🔧 {{ f.remediation }}</div>{% endif %}
+                {% if f.get('remediation') %}<div class="vuln-remediation">{{ f.remediation }}</div>{% endif %}
             </div>
             {% endif %}
             {% endfor %}
@@ -233,7 +230,7 @@
 
     {% set headers = results.get('headers', {}) %}
     <div class="result-section">
-        <h3 class="section-title">🛡️ Security Headers & Misconfigurations</h3>
+        <h3 class="section-title">Security Headers & Misconfigurations</h3>
         {% if headers.get('findings') %}
             {% for f in headers.get('findings', []) %}
             <div class="vuln-card vuln-card--{{ f.get('severity', 'low')|lower }}">
@@ -242,7 +239,7 @@
                     <span class="severity-badge severity-{{ f.get('severity', 'low')|lower }}">{{ f.get('severity') }} | CVSS {{ f.get('cvss', 'N/A') }}</span>
                 </div>
                 <div class="vuln-detail">{{ f.get('description') }}</div>
-                {% if f.get('remediation') %}<div class="vuln-remediation">🔧 {{ f.remediation }}</div>{% endif %}
+                {% if f.get('remediation') %}<div class="vuln-remediation">{{ f.remediation }}</div>{% endif %}
             </div>
             {% endfor %}
         {% endif %}
@@ -250,7 +247,7 @@
 
     {% set ssl = results.get('ssl', {}) %}
     <div class="result-section">
-        <h3 class="section-title">🔒 SSL/TLS Analysis</h3>
+        <h3 class="section-title">SSL/TLS Analysis</h3>
         {% set ssl_info = ssl.get('info', {}) %}
         <div class="info-grid">
             <div class="info-item"><span class="info-label">SSL Enabled</span><span class="info-value">{{ 'Yes ✓' if ssl_info.get('enabled') else 'No ✗' }}</span></div>
@@ -268,7 +265,7 @@
                     <span class="severity-badge severity-{{ f.get('severity', 'low')|lower }}">{{ f.severity }} | CVSS {{ f.get('cvss', 'N/A') }}</span>
                 </div>
                 <div class="vuln-detail">{{ f.description }}</div>
-                {% if f.get('remediation') %}<div class="vuln-remediation">🔧 {{ f.remediation }}</div>{% endif %}
+                {% if f.get('remediation') %}<div class="vuln-remediation">{{ f.remediation }}</div>{% endif %}
             </div>
             {% endfor %}
         {% endif %}
@@ -276,7 +273,7 @@
 
     {% set api = results.get('api', {}) %}
     <div class="result-section">
-        <h3 class="section-title">🔌 API Endpoint Discovery</h3>
+        <h3 class="section-title">API Endpoint Discovery</h3>
         <p class="section-meta">Checked {{ api.get('checked', 0) }} common API patterns</p>
         {% if api.get('found') %}
         <table class="data-table">
@@ -302,7 +299,7 @@
 <div class="tab-content" id="tab-owasp">
     {% set owasp = results.get('owasp', {}) %}
     <div class="result-section">
-        <h3 class="section-title">🛡️ OWASP Top 10 Assessment</h3>
+        <h3 class="section-title">OWASP Top 10 Assessment</h3>
         {% for f in owasp.get('findings', []) %}
         <div class="owasp-card owasp-card--{{ f.get('severity', 'low')|lower }}">
             <div class="owasp-header">
@@ -326,7 +323,7 @@
 <!-- ANALYSIS TAB -->
 <div class="tab-content" id="tab-analysis">
     <div class="result-section">
-        <h3 class="section-title">📊 Vulnerability Analysis Summary</h3>
+        <h3 class="section-title">Vulnerability Analysis Summary</h3>
         <div class="risk-score-box">
             <div class="risk-score-num">{{ analysis.get('risk_score', 0) }}</div>
             <div class="risk-score-label">Risk Score</div>
@@ -337,7 +334,7 @@
     {% if analysis.get('poc_examples') %}
     <div class="result-section">
         <h3 class="section-title">🔬 Exploitation Evidence (Simulated PoC)</h3>
-        <div class="warning-box">⚠️ All proof-of-concept demonstrations are simulated for academic purposes only.</div>
+        <div class="warning-box">All proof-of-concept demonstrations are simulated for academic purposes only.</div>
         {% for poc in analysis.get('poc_examples', []) %}
         <div class="poc-card">
             <div class="poc-vuln">{{ poc.vuln }}</div>
@@ -351,7 +348,7 @@
 
     {% if analysis.get('remediation_priority') %}
     <div class="result-section">
-        <h3 class="section-title">🔧 Priority Remediation Recommendations</h3>
+        <h3 class="section-title">Priority Remediation Recommendations</h3>
         {% for v in analysis.get('remediation_priority', []) %}
         <div class="remediation-item">
             <span class="severity-badge severity-{{ v.get('severity', 'low')|lower }}">{{ v.get('severity', 'Low') }}</span>

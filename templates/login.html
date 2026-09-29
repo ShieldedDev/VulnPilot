@@ -1,14 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Login — VAPT Scanner{% endblock %}
+{% block title %}Login — VulnPilot{% endblock %}
 {% block body_class %}auth-page{% endblock %}
 
 {% block content %}
 <div class="auth-container">
     <div class="auth-card">
         <div class="auth-header">
-            <div class="auth-logo">⚡</div>
-            <h1 class="auth-title">VAPT Scanner</h1>
-            <p class="auth-subtitle">Advanced Security Assessment Platform</p>
+            <div class="auth-logo">VP</div>
+            <h1 class="auth-title">VulnPilot</h1>
+            <p class="auth-subtitle">Pentest Operations Console</p>
         </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}

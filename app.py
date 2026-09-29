@@ -126,7 +126,7 @@ def start_scan():
         def log(msg, phase=None):
             session_data['progress'].append({'message': msg, 'phase': phase, 'time': datetime.now().strftime('%H:%M:%S')})
 
-        log('Initializing VAPT Scanner...', 'init')
+        log('Initializing VulnPilot scanner...', 'init')
         log(f'Target: {target}', 'init')
 
         results = {}
@@ -201,7 +201,7 @@ def start_scan():
         log('Remediation recommendations generated.', 'analysis')
 
         # Generate Reports
-        log('Generating VAPT Reports...', 'report')
+        log('Generating VulnPilot reports...', 'report')
         report_gen = ReportGenerator(target, results, scan_id)
         pdf_path = report_gen.generate_pdf()
         json_path = report_gen.generate_json()

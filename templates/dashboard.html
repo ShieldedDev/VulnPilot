@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Dashboard — VAPT Scanner{% endblock %}
+{% block title %}Dashboard — VulnPilot{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
@@ -11,33 +11,33 @@
         <h1 class="page-title">Security Dashboard</h1>
         <p class="page-subtitle">Welcome back, <strong>{{ session.username }}</strong></p>
     </div>
-    <a href="{{ url_for('scan') }}" class="btn-primary">+ New Scan</a>
+    <a href="{{ url_for('scan') }}" class="btn-primary">New Scan</a>
 </div>
 
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="stat-icon stat-icon--blue">📊</div>
+        <div class="stat-icon stat-icon--blue">T</div>
         <div class="stat-info">
             <div class="stat-value">{{ stats.total }}</div>
             <div class="stat-label">Total Scans</div>
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon stat-icon--green">✅</div>
+        <div class="stat-icon stat-icon--green">C</div>
         <div class="stat-info">
             <div class="stat-value">{{ stats.completed }}</div>
             <div class="stat-label">Completed</div>
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon stat-icon--yellow">⏳</div>
+        <div class="stat-icon stat-icon--yellow">R</div>
         <div class="stat-info">
             <div class="stat-value">{{ stats.running }}</div>
             <div class="stat-label">In Progress</div>
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon stat-icon--red">🔴</div>
+        <div class="stat-icon stat-icon--red">F</div>
         <div class="stat-info">
             <div class="stat-value">{{ stats.critical }}</div>
             <div class="stat-label">Critical Findings</div>
@@ -70,8 +70,8 @@
         </div>
         {% else %}
         <div class="empty-state">
-            <div class="empty-icon">🔍</div>
-            <p>No scans yet. Start your first VAPT assessment.</p>
+            <div class="empty-icon">–</div>
+            <p>No scans yet. Start your first assessment.</p>
             <a href="{{ url_for('scan') }}" class="btn-primary">Start Scan</a>
         </div>
         {% endif %}
@@ -93,7 +93,7 @@
                 <span class="step-num">2</span>
                 <div>
                     <strong>Choose Scan Type</strong>
-                    <p>Select Full VAPT, Quick Scan, or Custom.</p>
+                    <p>Select Full Assessment, Quick Scan, or Custom.</p>
                 </div>
             </div>
             <div class="guide-step">
@@ -112,7 +112,7 @@
             </div>
         </div>
         <div class="warning-box">
-            <strong>⚠️ Legal Notice:</strong> Only scan systems you own or have explicit permission to test.
+            <strong>Legal Notice:</strong> Only scan systems you own or have explicit permission to test.
             Unauthorized scanning is illegal.
         </div>
     </div>

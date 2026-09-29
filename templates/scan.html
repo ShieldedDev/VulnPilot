@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}New Scan — VAPT Scanner{% endblock %}
+{% block title %}New Scan — VulnPilot{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/scan.css') }}">
@@ -8,7 +8,7 @@
 {% block content %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">Launch VAPT Scan</h1>
+        <h1 class="page-title">Launch Scan</h1>
         <p class="page-subtitle">Configure and initiate an automated security assessment</p>
     </div>
 </div>
@@ -31,7 +31,7 @@
             <div class="form-group">
                 <label class="form-label" for="scan_type">Scan Type</label>
                 <select class="form-input" id="scan_type" name="scan_type">
-                    <option value="full">Full VAPT (All Phases)</option>
+                    <option value="full">Full Assessment (All Phases)</option>
                     <option value="recon">Reconnaissance Only</option>
                     <option value="vuln">Vulnerability Scan Only</option>
                     <option value="quick">Quick Scan (Lightweight)</option>
@@ -48,10 +48,10 @@
             <div class="scan-phases">
                 <label class="form-label">Scan Phases Included</label>
                 <div class="phases-grid">
-                    <div class="phase-badge phase-badge--recon">🔍 Reconnaissance</div>
-                    <div class="phase-badge phase-badge--enum">📡 Enumeration</div>
-                    <div class="phase-badge phase-badge--vuln">🛡️ Vulnerability Scan</div>
-                    <div class="phase-badge phase-badge--analysis">📊 Analysis</div>
+                    <div class="phase-badge phase-badge--recon">Reconnaissance</div>
+                    <div class="phase-badge phase-badge--enum">Enumeration</div>
+                    <div class="phase-badge phase-badge--vuln">Vulnerability Scan</div>
+                    <div class="phase-badge phase-badge--analysis">Analysis</div>
                 </div>
             </div>
 
@@ -64,7 +64,7 @@
             </div>
 
             <button class="btn-primary btn-full btn-launch" id="launchBtn" type="button">
-                ⚡ Launch VAPT Scan
+                Launch Scan
             </button>
         </div>
     </div>
@@ -119,7 +119,7 @@
         </div>
 
         <div id="scanCompleteActions" style="display:none;" class="scan-actions">
-            <p class="success-msg">✅ Scan completed successfully!</p>
+            <p class="success-msg">Scan completed successfully.</p>
             <div class="action-buttons">
                 <button class="btn-primary" id="viewResultsBtn">View Full Results</button>
                 <a href="{{ url_for('scan') }}" class="btn-secondary">Run Another Scan</a>

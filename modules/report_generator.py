@@ -16,17 +16,17 @@ class ReportGenerator:
     def generate_json(self):
         report = {
             'report_metadata': {
-                'title': 'VAPT Assessment Report',
+                'title': 'VulnPilot Assessment Report',
                 'scan_id': self.scan_id,
                 'target': self.target,
                 'generated_at': self.timestamp,
-                'tool': 'Advanced VAPT Scanner v1.0',
+                'tool': 'VulnPilot Security Scanner v1.0',
                 'classification': 'CONFIDENTIAL'
             },
             'executive_summary': self._executive_summary(),
             'scope': {
                 'target': self.target,
-                'scan_type': 'Full Automated VAPT',
+                'scan_type': 'Full Automated Assessment',
                 'phases': ['Reconnaissance', 'Enumeration', 'Vulnerability Scanning', 'Analysis']
             },
             'methodology': {
@@ -135,7 +135,7 @@ class ReportGenerator:
                 ['Scan ID', self.scan_id[:16] + '...'],
                 ['Date', self.timestamp],
                 ['Classification', 'CONFIDENTIAL'],
-                ['Tool', 'Advanced VAPT Scanner v1.0'],
+                ['Tool', 'VulnPilot Security Scanner v1.0'],
                 ['Methodology', 'OWASP Top 10 / PTES / NIST SP 800-115'],
             ]
             meta_table = Table(meta_data, colWidths=[4*cm, 12*cm])
@@ -410,7 +410,7 @@ class ReportGenerator:
             content.append(HRFlowable(width='100%', thickness=1, color=dark_bg))
             content.append(Spacer(1, 0.3*cm))
             content.append(Paragraph(
-                f'This report was generated automatically by Advanced VAPT Scanner v1.0 on {self.timestamp}. '
+                f'This report was generated automatically by VulnPilot Security Scanner v1.0 on {self.timestamp}. '
                 'For academic and authorized security testing use only.',
                 small_style))
 
@@ -424,7 +424,7 @@ class ReportGenerator:
     def _generate_simple_pdf(self):
         """Fallback plain text report if reportlab is unavailable."""
         path = os.path.join(self.report_dir, f'{self.scan_id}.pdf')
-        content = f"""VAPT Assessment Report
+        content = f"""VulnPilot Assessment Report
 Target: {self.target}
 Generated: {self.timestamp}
 Scan ID: {self.scan_id}
@@ -479,7 +479,7 @@ JSON report has been generated with full details.
         risk = analysis.get('overall_risk', 'Unknown')
         sc = analysis.get('severity_counts', {})
         return (
-            f"The automated VAPT assessment of '{self.target}' has been completed. "
+            f"The automated VulnPilot assessment of '{self.target}' has been completed. "
             f"The target demonstrates a {risk} overall security posture. "
             f"Key areas requiring immediate attention include: "
             f"{sc.get('Critical', 0)} critical vulnerabilities and {sc.get('High', 0)} high-severity issues. "
