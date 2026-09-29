@@ -1,140 +1,111 @@
-# Advanced VAPT Scanner
+# VulnPilot
 
-A professional Vulnerability Assessment and Penetration Testing (VAPT) web application
-built with Python Flask and Vanilla JavaScript.
+A Flask-based application for evidence-focused reconnaissance, vulnerability candidate discovery, and reporting in authorized security assessments.
 
----
+## Overview
 
-## ⚡ Quick Start
+The project has been improved from a demo-style scanner into a more maintainable and safer foundation for a VAPT tool. The main changes include:
 
-### Prerequisites
-- Python 3.8+
-- pip
+- centralized configuration model
+- normalized finding schema
+- safer default scanner settings
+- evidence-based vulnerability reporting
+- documentation for setup, usage, architecture, and security boundaries
 
-### Installation
+## Quick Start
 
 ```bash
-# 1. Clone or extract the project
-cd vapt_scanner
-
-# 2. Create a virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate   # Linux/macOS
-venv\Scripts\activate      # Windows
-
-# 3. Install dependencies
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-
-# 4. Run the application
+cp .env.example .env
 python app.py
 ```
 
-### Access the App
-Open your browser: `http://localhost:5000`
+Open the app at:
 
-### Default Admin Credentials
-```
-Username: admin
-Password: Admin@1234
+```text
+http://localhost:5000
 ```
 
----
+## Security and Operational Defaults
 
-## 📁 Project Structure
+The scanner now uses safer defaults for:
 
-```
-vapt_scanner/
-├── app.py                      # Main Flask application
+- timeouts
+- retries
+- concurrency
+- layered scope controls
+- consistent user-agent settings
+- TLS verification enabled by default
+
+## Important Notice
+
+This tool is intended for authorized security testing only. Do not use it on targets without explicit permission.
+
+## Project Structure
+
+```text
+VulnPilot/
+├── app.py
+├── README.md
+├── ARCHITECTURE.md
+├── CONFIGURATION.md
+├── USAGE.md
+├── MODULES.md
+├── SECURITY.md
+├── .env.example
 ├── requirements.txt
-├── vapt.db                     # SQLite database (auto-created)
 ├── modules/
 │   ├── __init__.py
-│   ├── scanner.py              # Core VAPT scanning engine
-│   ├── report_generator.py     # PDF & JSON report generator
-│   └── database.py             # SQLite database handler
+│   ├── config.py
+│   ├── database.py
+│   ├── finding.py
+│   ├── report_generator.py
+│   └── scanner.py
+├── static/
+│   ├── css/
+│   ├── js/
+│   └── reports/
 ├── templates/
-│   ├── base.html               # Base layout with navbar
+│   ├── base.html
+│   ├── dashboard.html
+│   ├── forgot_password.html
+│   ├── help.html
+│   ├── history.html
 │   ├── login.html
 │   ├── register.html
-│   ├── forgot_password.html
-│   ├── dashboard.html
-│   ├── scan.html               # Live scan interface
-│   ├── results.html            # Tabbed results display
-│   ├── history.html
-│   └── help.html               # OWASP Top 10 guide
-└── static/
-    ├── css/
-    │   ├── main.css            # Global styles & dark theme
-    │   ├── dashboard.css
-    │   ├── scan.css
-    │   ├── results.css
-    │   └── help.css
-    ├── js/
-    │   ├── auth.js             # Auth form interactions
-    │   ├── scan.js             # Live scan polling & progress
-    │   ├── results.js          # Tab switching
-    │   ├── history.js          # Delete scan records
-    │   └── help.js             # Scroll highlighting
-    └── reports/                # Generated PDF & JSON reports
+│   ├── results.html
+│   └── scan.html
+├── tests/
+│   └── test_scan_models.py
+└── vapt.db
 ```
 
----
+## Scan Workflow
 
-## 🎯 Safe Demo Targets
+1. user authenticates
+2. target and scan type are submitted
+3. scanner phases run in sequence
+4. results are normalized into evidence-based findings
+5. reports are exported to JSON and PDF-style output
 
-Use only targets you own or have explicit authorization for:
+## Key Improvements Already Included
 
-| Target | Description |
-|--------|-------------|
-| `http://testphp.vulnweb.com` | Deliberately vulnerable PHP app by Acunetix |
-| `http://localhost` | Your local development server |
-| `http://dvwa.local` | DVWA — Damn Vulnerable Web App |
-| `http://192.168.56.101` | Metasploitable2 on local network |
+- safer configuration model in [modules/config.py](modules/config.py)
+- normalized vulnerability schema in [modules/finding.py](modules/finding.py)
+- lower-risk default scan settings in [modules/scanner.py](modules/scanner.py)
+- environment-based admin setup in [modules/database.py](modules/database.py)
+- regression tests in [tests/test_scan_models.py](tests/test_scan_models.py)
 
----
+## Documentation
 
-## 🔍 Scanning Phases
+- [ARCHITECTURE.md](ARCHITECTURE.md)
+- [CONFIGURATION.md](CONFIGURATION.md)
+- [USAGE.md](USAGE.md)
+- [MODULES.md](MODULES.md)
+- [SECURITY.md](SECURITY.md)
 
-### Phase 1 — Reconnaissance
-- Web technology detection (server, CMS, frameworks)
-- Web spider/crawler (links, forms)
-- Subdomain discovery
-- Directory fuzzing (built-in + custom wordlist)
+## License and Use
 
-### Phase 2 — Enumeration
-- Port scanning (24 common ports)
-- Service enumeration & banner grabbing
-- OS detection
-
-### Phase 3 — Vulnerability Scanning
-- XSS (Reflected + Stored indicators)
-- SQL Injection (error-based + blind simulation)
-- IDOR pattern testing
-- Security header analysis
-- SSL/TLS configuration check
-- API endpoint discovery
-- OWASP Top 10 checks
-
-### Phase 4 — Analysis & Reporting
-- CVSS v3.1 severity scoring
-- Risk classification (Critical/High/Medium/Low)
-- PoC exploitation simulation
-- PDF report generation (with reportlab)
-- JSON report generation
-
----
-
-## ⚠️ Legal Disclaimer
-
-This tool is intended **exclusively for authorized security testing** in academic,
-lab, and controlled environments. Only test systems you own or have written
-permission to test. Unauthorized scanning is illegal.
-
----
-
-## 📦 Tech Stack
-
-- **Backend:** Python 3, Flask, SQLite
-- **Frontend:** Vanilla HTML5, CSS3, JavaScript (ES6)
-- **PDF Generation:** ReportLab
-- **Scanning:** Python stdlib (socket, ssl, urllib)
+This project is intended for ethical security testing and vulnerability discovery in environments where you are authorized to test.

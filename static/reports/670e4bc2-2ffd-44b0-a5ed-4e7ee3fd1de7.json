@@ -1,0 +1,1146 @@
+{
+  "report_metadata": {
+    "title": "VAPT Assessment Report",
+    "scan_id": "670e4bc2-2ffd-44b0-a5ed-4e7ee3fd1de7",
+    "target": "example.com",
+    "generated_at": "2026-09-29 09:59:02",
+    "tool": "Advanced VAPT Scanner v1.0",
+    "classification": "CONFIDENTIAL"
+  },
+  "executive_summary": {
+    "overview": "A comprehensive vulnerability assessment and penetration test was conducted against the target 'example.com'. The assessment identified 8 security findings, comprising 0 Critical, 0 High, 3 Medium, and 5 Low severity issues. The overall risk rating for the target is assessed as <b>Medium</b>. Immediate remediation of Critical and High severity findings is strongly recommended.",
+    "risk": "Medium",
+    "total_findings": 8,
+    "severity_counts": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 3,
+      "Low": 5,
+      "Informational": 0
+    }
+  },
+  "scope": {
+    "target": "example.com",
+    "scan_type": "Full Automated VAPT",
+    "phases": [
+      "Reconnaissance",
+      "Enumeration",
+      "Vulnerability Scanning",
+      "Analysis"
+    ]
+  },
+  "methodology": {
+    "approach": "Black-Box Testing",
+    "standards": [
+      "OWASP Top 10",
+      "PTES",
+      "NIST SP 800-115"
+    ],
+    "phases": {
+      "recon": "Web crawling, tech detection, subdomain discovery, dir fuzzing",
+      "enum": "Port scanning, service enumeration, OS fingerprinting, banner grabbing",
+      "vuln": "XSS, SQLi, IDOR, header analysis, SSL/TLS check, OWASP checks",
+      "analysis": "CVSS scoring, severity classification, PoC generation, remediation"
+    }
+  },
+  "findings": {
+    "reconnaissance": {
+      "technologies": {
+        "server": "cloudflare",
+        "cms": "",
+        "frameworks": [],
+        "languages": [],
+        "headers": {
+          "Date": "Tue, 29 Sep 2026 09:58:30 GMT",
+          "Content-Type": "text/html; charset=utf-8",
+          "Transfer-Encoding": "chunked",
+          "Connection": "close",
+          "Server": "cloudflare",
+          "Last-Modified": "Mon, 28 Sep 2026 16:19:32 GMT",
+          "Allow": "GET, HEAD",
+          "cf-cache-status": "HIT",
+          "Age": "5250",
+          "Content-Encoding": "gzip",
+          "CF-RAY": "a42a21386e12b081-BOM"
+        },
+        "powered_by": "",
+        "interesting_headers": {
+          "x-frame-options": "MISSING",
+          "content-security-policy": "MISSING",
+          "x-xss-protection": "MISSING",
+          "strict-transport-security": "MISSING",
+          "x-content-type-options": "MISSING",
+          "referrer-policy": "MISSING"
+        }
+      },
+      "crawl": {
+        "links": [],
+        "forms": [],
+        "pages_crawled": 1
+      },
+      "subdomains": {
+        "found": [
+          {
+            "subdomain": "www.example.com",
+            "ip": "172.66.147.243",
+            "status": "resolved"
+          }
+        ],
+        "checked": 20,
+        "base_domain": "example.com"
+      },
+      "directories": {
+        "found": [],
+        "total_checked": 29,
+        "interesting": []
+      }
+    },
+    "enumeration": {
+      "ports": {
+        "host": "example.com",
+        "ip": "172.66.147.243",
+        "open": [
+          80,
+          443,
+          8080,
+          8443
+        ],
+        "closed": [
+          21,
+          22,
+          23,
+          25,
+          53,
+          110,
+          135,
+          139,
+          143,
+          445,
+          993,
+          995,
+          1433,
+          1521,
+          3306,
+          3389,
+          5432,
+          5900,
+          6379,
+          8888,
+          9200,
+          27017
+        ],
+        "total_scanned": 26
+      },
+      "services": {
+        "80": {
+          "service": "HTTP",
+          "banner": "HTTP/1.1 403 Forbidden\r\nDate: Tue, 29 Sep 2026 09:58:54 GMT\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Length: 17\r\nConnection: close\r\nCache-Control: private, max-age=0, no-store, no-cache, must",
+          "risk": "Low"
+        },
+        "443": {
+          "service": "HTTPS",
+          "banner": "SSL/TLS Service",
+          "risk": "Low"
+        },
+        "8080": {
+          "service": "HTTP-Alt",
+          "banner": "HTTP/1.1 403 Forbidden\r\nDate: Tue, 29 Sep 2026 09:58:54 GMT\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Length: 17\r\nConnection: close\r\nCache-Control: private, max-age=0, no-store, no-cache, must",
+          "risk": "Low"
+        },
+        "8443": {
+          "service": "HTTPS-Alt",
+          "banner": "",
+          "risk": "Low"
+        }
+      },
+      "os_detection": {
+        "os": "Unknown",
+        "confidence": "Low",
+        "hints": [
+          "OS inferred from response headers only; confidence is limited."
+        ]
+      }
+    },
+    "vulnerabilities": {
+      "xss": {
+        "findings": [],
+        "payloads_tested": 6
+      },
+      "sqli": {
+        "findings": [
+          {
+            "id": "2baaeb0f-456c-4fdd-9ec2-6c520231e8c9",
+            "title": "Blind SQLi timing check simulation",
+            "severity": "Informational",
+            "confidence": "Low",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 0.0,
+              "vector": ""
+            },
+            "cwe": "CWE-89",
+            "cve": [],
+            "target": "example.com",
+            "endpoint": "http://example.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "Timing-based SQLi validation was simulated and not confirmed against a live vulnerable endpoint."
+            ],
+            "description": "A blind timing-based SQL injection payload was simulated and should only be considered a candidate indicator.",
+            "impact": "A time-delayed database attack may be feasible when the application is vulnerable.",
+            "remediation": "Validate with a safe, consented test target and confirm differential timing evidence before reporting.",
+            "references": [],
+            "detection_method": "simulated_timing_check",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "type": "simulated"
+            }
+          }
+        ],
+        "payloads_tested": 7
+      },
+      "idor": {
+        "findings": [],
+        "patterns_tested": 10
+      },
+      "headers": {
+        "findings": [
+          {
+            "id": "b80c1963-987d-4156-9c71-1641ee87ae8e",
+            "title": "Missing X-FRAME-OPTIONS header",
+            "severity": "Medium",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 4.3,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "example.com",
+            "endpoint": "http://example.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "X-FRAME-OPTIONS header not present in the response."
+            ],
+            "description": "Missing X-Frame-Options - Clickjacking vulnerability",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Add: X-Frame-Options: DENY or SAMEORIGIN",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "x-frame-options"
+            }
+          },
+          {
+            "id": "f34d8d1b-0e24-4766-ad86-c7fdec81e3f1",
+            "title": "Missing CONTENT-SECURITY-POLICY header",
+            "severity": "Medium",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 5.0,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "example.com",
+            "endpoint": "http://example.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "CONTENT-SECURITY-POLICY header not present in the response."
+            ],
+            "description": "Missing Content-Security-Policy header",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Implement a strict CSP policy",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "content-security-policy"
+            }
+          },
+          {
+            "id": "98a0ca22-ce01-44f9-a7c6-ff76686c75af",
+            "title": "Missing X-CONTENT-TYPE-OPTIONS header",
+            "severity": "Low",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 3.1,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "example.com",
+            "endpoint": "http://example.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "X-CONTENT-TYPE-OPTIONS header not present in the response."
+            ],
+            "description": "Missing X-Content-Type-Options - MIME sniffing vulnerability",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Add: X-Content-Type-Options: nosniff",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "x-content-type-options"
+            }
+          },
+          {
+            "id": "28a2c881-b0fc-4a45-92ef-6d23df527256",
+            "title": "Missing STRICT-TRANSPORT-SECURITY header",
+            "severity": "Medium",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 4.8,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "example.com",
+            "endpoint": "http://example.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "STRICT-TRANSPORT-SECURITY header not present in the response."
+            ],
+            "description": "Missing HSTS header - downgrade attack possible",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "strict-transport-security"
+            }
+          },
+          {
+            "id": "4ba1d7d2-6f10-4337-b1ae-ba1f79c85472",
+            "title": "Missing X-XSS-PROTECTION header",
+            "severity": "Low",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 3.1,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "example.com",
+            "endpoint": "http://example.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "X-XSS-PROTECTION header not present in the response."
+            ],
+            "description": "Missing X-XSS-Protection header",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Add: X-XSS-Protection: 1; mode=block",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "x-xss-protection"
+            }
+          },
+          {
+            "id": "0469e6e0-0477-4be6-83e7-04cc2d5f4435",
+            "title": "Missing REFERRER-POLICY header",
+            "severity": "Low",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 2.6,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "example.com",
+            "endpoint": "http://example.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "REFERRER-POLICY header not present in the response."
+            ],
+            "description": "Missing Referrer-Policy header - information leakage",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Add: Referrer-Policy: strict-origin-when-cross-origin",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "referrer-policy"
+            }
+          },
+          {
+            "id": "1906139e-be16-46ea-8dad-5bd57d64f856",
+            "title": "Missing PERMISSIONS-POLICY header",
+            "severity": "Low",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 2.0,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "example.com",
+            "endpoint": "http://example.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "PERMISSIONS-POLICY header not present in the response."
+            ],
+            "description": "Missing Permissions-Policy header",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Add: Permissions-Policy: camera=(), microphone=(), geolocation=()",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "permissions-policy"
+            }
+          },
+          {
+            "id": "ccd70249-2adb-48c5-98f3-37b6d1fa0306",
+            "title": "Technology disclosure via Server header",
+            "severity": "Low",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 2.0,
+              "vector": ""
+            },
+            "cwe": "CWE-200",
+            "cve": [],
+            "target": "example.com",
+            "endpoint": "http://example.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "Server header exposed value: cloudflare."
+            ],
+            "description": "Server header reveals: cloudflare",
+            "impact": "The exact server and version may aid attackers in targeting known vulnerabilities.",
+            "remediation": "Remove or obfuscate the Server header.",
+            "references": [],
+            "detection_method": "header_analysis",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "Server"
+            }
+          }
+        ],
+        "headers_checked": 7
+      },
+      "ssl_tls": {
+        "info": {
+          "enabled": true,
+          "version": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "cert_valid": true,
+          "cert_issuer": "SSL Corporation",
+          "cert_expiry": "Dec 25 22:56:35 2026 GMT",
+          "issues": []
+        },
+        "findings": []
+      },
+      "api_endpoints": {
+        "found": [],
+        "checked": 15
+      },
+      "owasp": {
+        "findings": [
+          {
+            "category": "A01 - Broken Access Control",
+            "checks": [
+              "IDOR testing",
+              "Directory traversal",
+              "Admin panel exposure"
+            ],
+            "status": "Checked",
+            "severity": "High",
+            "cvss": 7.5
+          },
+          {
+            "category": "A02 - Cryptographic Failures",
+            "checks": [
+              "HTTPS check",
+              "Cookie security flags"
+            ],
+            "status": "HTTPS not enforced",
+            "severity": "High",
+            "cvss": 7.5
+          },
+          {
+            "category": "A03 - Injection",
+            "checks": [
+              "SQL Injection",
+              "XSS",
+              "Command Injection"
+            ],
+            "status": "Checked via payload testing",
+            "severity": "Critical",
+            "cvss": 9.8
+          },
+          {
+            "category": "A05 - Security Misconfiguration",
+            "checks": [
+              "Default credentials",
+              "Debug mode",
+              "Error exposure",
+              "Directory listing"
+            ],
+            "status": "Checked",
+            "severity": "Medium",
+            "cvss": 5.3
+          },
+          {
+            "category": "A06 - Vulnerable and Outdated Components",
+            "checks": [
+              "Technology version detection"
+            ],
+            "status": "Component versions analyzed",
+            "severity": "Medium",
+            "cvss": 5.5
+          },
+          {
+            "category": "A08 - Software and Data Integrity Failures",
+            "checks": [
+              "Subresource Integrity (SRI)",
+              "Update mechanism"
+            ],
+            "status": "SRI check performed",
+            "severity": "Medium",
+            "cvss": 4.8
+          },
+          {
+            "category": "A09 - Security Logging and Monitoring Failures",
+            "checks": [
+              "Error page verbosity",
+              "Log exposure"
+            ],
+            "status": "Manual review recommended",
+            "severity": "Medium",
+            "cvss": 4.3
+          },
+          {
+            "category": "A10 - Server-Side Request Forgery (SSRF)",
+            "checks": [
+              "URL parameter injection",
+              "Webhook endpoints"
+            ],
+            "status": "Basic SSRF patterns checked",
+            "severity": "High",
+            "cvss": 7.2
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "vulnerabilities": [
+        {
+          "id": "b80c1963-987d-4156-9c71-1641ee87ae8e",
+          "title": "Missing X-FRAME-OPTIONS header",
+          "severity": "Medium",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 4.3,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "example.com",
+          "endpoint": "http://example.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "X-FRAME-OPTIONS header not present in the response."
+          ],
+          "description": "Missing X-Frame-Options - Clickjacking vulnerability",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: X-Frame-Options: DENY or SAMEORIGIN",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "x-frame-options"
+          }
+        },
+        {
+          "id": "f34d8d1b-0e24-4766-ad86-c7fdec81e3f1",
+          "title": "Missing CONTENT-SECURITY-POLICY header",
+          "severity": "Medium",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 5.0,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "example.com",
+          "endpoint": "http://example.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "CONTENT-SECURITY-POLICY header not present in the response."
+          ],
+          "description": "Missing Content-Security-Policy header",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Implement a strict CSP policy",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "content-security-policy"
+          }
+        },
+        {
+          "id": "28a2c881-b0fc-4a45-92ef-6d23df527256",
+          "title": "Missing STRICT-TRANSPORT-SECURITY header",
+          "severity": "Medium",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 4.8,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "example.com",
+          "endpoint": "http://example.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "STRICT-TRANSPORT-SECURITY header not present in the response."
+          ],
+          "description": "Missing HSTS header - downgrade attack possible",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "strict-transport-security"
+          }
+        },
+        {
+          "id": "98a0ca22-ce01-44f9-a7c6-ff76686c75af",
+          "title": "Missing X-CONTENT-TYPE-OPTIONS header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 3.1,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "example.com",
+          "endpoint": "http://example.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "X-CONTENT-TYPE-OPTIONS header not present in the response."
+          ],
+          "description": "Missing X-Content-Type-Options - MIME sniffing vulnerability",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: X-Content-Type-Options: nosniff",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "x-content-type-options"
+          }
+        },
+        {
+          "id": "4ba1d7d2-6f10-4337-b1ae-ba1f79c85472",
+          "title": "Missing X-XSS-PROTECTION header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 3.1,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "example.com",
+          "endpoint": "http://example.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "X-XSS-PROTECTION header not present in the response."
+          ],
+          "description": "Missing X-XSS-Protection header",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: X-XSS-Protection: 1; mode=block",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "x-xss-protection"
+          }
+        },
+        {
+          "id": "0469e6e0-0477-4be6-83e7-04cc2d5f4435",
+          "title": "Missing REFERRER-POLICY header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 2.6,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "example.com",
+          "endpoint": "http://example.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "REFERRER-POLICY header not present in the response."
+          ],
+          "description": "Missing Referrer-Policy header - information leakage",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: Referrer-Policy: strict-origin-when-cross-origin",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "referrer-policy"
+          }
+        },
+        {
+          "id": "1906139e-be16-46ea-8dad-5bd57d64f856",
+          "title": "Missing PERMISSIONS-POLICY header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 2.0,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "example.com",
+          "endpoint": "http://example.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "PERMISSIONS-POLICY header not present in the response."
+          ],
+          "description": "Missing Permissions-Policy header",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: Permissions-Policy: camera=(), microphone=(), geolocation=()",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "permissions-policy"
+          }
+        },
+        {
+          "id": "ccd70249-2adb-48c5-98f3-37b6d1fa0306",
+          "title": "Technology disclosure via Server header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 2.0,
+            "vector": ""
+          },
+          "cwe": "CWE-200",
+          "cve": [],
+          "target": "example.com",
+          "endpoint": "http://example.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "Server header exposed value: cloudflare."
+          ],
+          "description": "Server header reveals: cloudflare",
+          "impact": "The exact server and version may aid attackers in targeting known vulnerabilities.",
+          "remediation": "Remove or obfuscate the Server header.",
+          "references": [],
+          "detection_method": "header_analysis",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "Server"
+          }
+        }
+      ],
+      "severity_counts": {
+        "Critical": 0,
+        "High": 0,
+        "Medium": 3,
+        "Low": 5,
+        "Informational": 0
+      },
+      "risk_score": 17,
+      "overall_risk": "Medium",
+      "poc_examples": [],
+      "remediation_priority": [
+        {
+          "id": "b80c1963-987d-4156-9c71-1641ee87ae8e",
+          "title": "Missing X-FRAME-OPTIONS header",
+          "severity": "Medium",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 4.3,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "example.com",
+          "endpoint": "http://example.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "X-FRAME-OPTIONS header not present in the response."
+          ],
+          "description": "Missing X-Frame-Options - Clickjacking vulnerability",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: X-Frame-Options: DENY or SAMEORIGIN",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "x-frame-options"
+          }
+        },
+        {
+          "id": "f34d8d1b-0e24-4766-ad86-c7fdec81e3f1",
+          "title": "Missing CONTENT-SECURITY-POLICY header",
+          "severity": "Medium",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 5.0,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "example.com",
+          "endpoint": "http://example.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "CONTENT-SECURITY-POLICY header not present in the response."
+          ],
+          "description": "Missing Content-Security-Policy header",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Implement a strict CSP policy",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "content-security-policy"
+          }
+        },
+        {
+          "id": "28a2c881-b0fc-4a45-92ef-6d23df527256",
+          "title": "Missing STRICT-TRANSPORT-SECURITY header",
+          "severity": "Medium",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 4.8,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "example.com",
+          "endpoint": "http://example.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "STRICT-TRANSPORT-SECURITY header not present in the response."
+          ],
+          "description": "Missing HSTS header - downgrade attack possible",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "strict-transport-security"
+          }
+        },
+        {
+          "id": "98a0ca22-ce01-44f9-a7c6-ff76686c75af",
+          "title": "Missing X-CONTENT-TYPE-OPTIONS header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 3.1,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "example.com",
+          "endpoint": "http://example.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "X-CONTENT-TYPE-OPTIONS header not present in the response."
+          ],
+          "description": "Missing X-Content-Type-Options - MIME sniffing vulnerability",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: X-Content-Type-Options: nosniff",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "x-content-type-options"
+          }
+        },
+        {
+          "id": "4ba1d7d2-6f10-4337-b1ae-ba1f79c85472",
+          "title": "Missing X-XSS-PROTECTION header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 3.1,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "example.com",
+          "endpoint": "http://example.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "X-XSS-PROTECTION header not present in the response."
+          ],
+          "description": "Missing X-XSS-Protection header",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: X-XSS-Protection: 1; mode=block",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "x-xss-protection"
+          }
+        }
+      ]
+    }
+  },
+  "risk_summary": {
+    "overall": "Medium",
+    "score": 17,
+    "counts": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 3,
+      "Low": 5,
+      "Informational": 0
+    }
+  },
+  "remediation_recommendations": [
+    {
+      "finding": "Finding",
+      "priority": "Medium",
+      "recommendation": "Add: X-Frame-Options: DENY or SAMEORIGIN",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 4.3,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Medium",
+      "recommendation": "Implement a strict CSP policy",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 5.0,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Medium",
+      "recommendation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 4.8,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Low",
+      "recommendation": "Add: X-Content-Type-Options: nosniff",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 3.1,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Low",
+      "recommendation": "Add: X-XSS-Protection: 1; mode=block",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 3.1,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Low",
+      "recommendation": "Add: Referrer-Policy: strict-origin-when-cross-origin",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 2.6,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Low",
+      "recommendation": "Add: Permissions-Policy: camera=(), microphone=(), geolocation=()",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 2.0,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Low",
+      "recommendation": "Remove or obfuscate the Server header.",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 2.0,
+        "vector": ""
+      }
+    }
+  ],
+  "conclusion": "The automated VAPT assessment of 'example.com' has been completed. The target demonstrates a Medium overall security posture. Key areas requiring immediate attention include: 0 critical vulnerabilities and 0 high-severity issues. It is recommended that the development and security teams prioritize remediation of critical and high-severity findings before re-assessment. A follow-up pentest is advised after remediation to validate that all identified vulnerabilities have been resolved. All testing was performed in a controlled, authorized manner following ethical security research practices."
+}

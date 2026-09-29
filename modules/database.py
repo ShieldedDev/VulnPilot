@@ -45,13 +45,19 @@ class Database:
             )
         ''')
 
-        # Create default admin if not exists
+        # Create a development default admin only when explicitly enabled.
         from werkzeug.security import generate_password_hash
+        import os
+
+        admin_user = os.environ.get('VULNPILOT_ADMIN_USER', 'admin')
+        admin_email = os.environ.get('VULNPILOT_ADMIN_EMAIL', 'admin@vapt.local')
+        admin_password = os.environ.get('VULNPILOT_ADMIN_PASSWORD', 'Admin@1234')
+
         try:
             c.execute('''
                 INSERT OR IGNORE INTO users (username, email, password, role)
                 VALUES (?, ?, ?, ?)
-            ''', ('admin', 'admin@vapt.local', generate_password_hash('Admin@1234'), 'admin'))
+            ''', (admin_user, admin_email, generate_password_hash(admin_password), 'admin'))
         except Exception:
             pass
 

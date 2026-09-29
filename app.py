@@ -8,6 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from modules.scanner import VAPTScanner
 from modules.report_generator import ReportGenerator
 from modules.database import Database
+from modules.config import ScannerConfig
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -119,7 +120,7 @@ def start_scan():
     }
 
     def run_scan():
-        scanner = VAPTScanner(target, scan_type, wordlist)
+        scanner = VAPTScanner(target, scan_type, wordlist, config=ScannerConfig())
         session_data = scan_sessions[scan_id]
 
         def log(msg, phase=None):
