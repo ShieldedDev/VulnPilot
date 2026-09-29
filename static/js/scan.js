@@ -3,6 +3,7 @@
 var currentScanId = null;
 var pollInterval = null;
 var pollCount = 0;
+var renderedProgressCount = 0;
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -39,11 +40,12 @@ function handleLaunch() {
 
     startScan(target, scanType, wordlist);
 }
-
 function startScan(target, scanType, wordlist) {
     var launchBtn = document.getElementById('launchBtn');
     launchBtn.disabled = true;
-    launchBtn.textContent = '⏳ Initializing...';
+    launchBtn.textContent = 'Starting assessment...';
+    renderedProgressCount = 0;
+    document.getElementById('logOutput').replaceChildren();
 
     fetch('/scan/start', {
         method: 'POST',
@@ -55,7 +57,7 @@ function startScan(target, scanType, wordlist) {
         if (data.error) {
             showError(data.error);
             launchBtn.disabled = false;
-            launchBtn.textContent = '⚡ Launch VAPT Scan';
+            launchBtn.textContent = 'Launch Scan';
             return;
         }
         currentScanId = data.scan_id;
@@ -65,13 +67,15 @@ function startScan(target, scanType, wordlist) {
     .catch(function (err) {
         showError('Failed to start scan. Please try again.');
         launchBtn.disabled = false;
-        launchBtn.textContent = '⚡ Launch VAPT Scan';
+        launchBtn.textContent = 'Launch Scan';
     });
 }
 
 function showProgressPanel() {
-    document.getElementById('progressPanel').style.display = 'block';
-    document.getElementById('progressPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var panel = document.getElementById('progressPanel');
+    panel.style.display = 'block';
+    panel.classList.add('is-visible', 'scan-progress-active');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function beginPolling(scanId) {
@@ -141,16 +145,20 @@ function updateProgress(data) {
         document.getElementById('statusBadge').textContent = statusText;
     }
 
-    // Render logs
-    var html = '';
-    progress.forEach(function (entry) {
-        var cls = 'log-line--' + (entry.phase || 'init');
-        var time = entry.time ? '<span style="color:#555">[' + entry.time + ']</span> ' : '';
-        html += '<span class="log-line ' + cls + '">' + time + '&gt; ' + escapeHtml(entry.message) + '</span>\n';
-    });
-
-    if (html) {
-        logOutput.innerHTML = html;
+    if (progress.length > renderedProgressCount) {
+        progress.slice(renderedProgressCount).forEach(function (entry) {
+            var line = document.createElement('span');
+            line.className = 'log-line log-line--' + (entry.phase || 'init');
+            if (entry.time) {
+                var timestamp = document.createElement('span');
+                timestamp.className = 'log-timestamp';
+                timestamp.textContent = '[' + entry.time + '] ';
+                line.appendChild(timestamp);
+            }
+            line.appendChild(document.createTextNode('> ' + (entry.message || '')));
+            logOutput.appendChild(line);
+        });
+        renderedProgressCount = progress.length;
         logOutput.scrollTop = logOutput.scrollHeight;
     }
 }
@@ -158,6 +166,7 @@ function updateProgress(data) {
 function setProgress(pct) {
     document.getElementById('progressFill').style.width = pct + '%';
     document.getElementById('progressPercent').textContent = pct + '%';
+    document.getElementById('progressTrack').setAttribute('aria-valuenow', pct);
 }
 
 function updatePhaseIndicators(currentPhase) {
@@ -190,16 +199,18 @@ function onScanComplete(data) {
     });
 
     var badge = document.getElementById('statusBadge');
-    badge.textContent = 'Completed ✓';
-    badge.style.background = 'rgba(63,185,80,0.15)';
-    badge.style.color = '#3fb950';
-    badge.style.animation = 'none';
+    badge.textContent = 'Completed';
+    badge.classList.add('scan-status-complete');
+    document.getElementById('progressPanel').classList.remove('scan-progress-active');
 
     document.getElementById('scanCompleteActions').style.display = 'block';
 
     // Add completion log line
     var logOutput = document.getElementById('logOutput');
-    logOutput.innerHTML += '<span class="log-line log-line--complete">\n✅ SCAN COMPLETED — Reports ready for download.\n</span>';
+    var completeLine = document.createElement('span');
+    completeLine.className = 'log-line log-line--complete';
+    completeLine.textContent = 'SCAN COMPLETED — Reports ready for download.';
+    logOutput.appendChild(completeLine);
     logOutput.scrollTop = logOutput.scrollHeight;
 }
 
@@ -224,12 +235,4 @@ function showError(message) {
         alert.style.transition = 'opacity 0.5s';
         setTimeout(function () { alert.remove(); }, 500);
     }, 4000);
-}
-
-function escapeHtml(text) {
-    return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
 }

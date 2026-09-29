@@ -87,8 +87,13 @@ def dashboard():
         'total': len(scans),
         'completed': sum(1 for s in scans if s['status'] == 'completed'),
         'running': sum(1 for s in scans if s['status'] == 'running'),
-        'critical': sum(1 for s in scans if s.get('critical_count', 0) > 0)
+        'critical': sum(1 for s in scans if s.get('critical_count', 0) > 0),
+        'severity': {
+            severity: sum(int(scan.get(f'{severity.lower()}_count') or 0) for scan in scans)
+            for severity in ('Critical', 'High', 'Medium', 'Low')
+        }
     }
+    stats['findings'] = sum(stats['severity'].values())
     return render_template('dashboard.html', scans=scans[:5], stats=stats)
 
 # ─── Scanner ──────────────────────────────────────────────────────────────────

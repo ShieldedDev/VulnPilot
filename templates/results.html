@@ -21,37 +21,57 @@
 {% set analysis = results.get('analysis', {}) %}
 {% set sc = analysis.get('severity_counts', {}) %}
 {% set risk = analysis.get('overall_risk', 'Unknown') %}
+{% set risk_score = [[analysis.get('risk_score', 0)|float, 0]|max, 100]|min %}
+{% set total_findings = sc.values()|sum %}
 
-<!-- Risk Overview -->
-<div class="risk-overview">
-    <div class="risk-badge risk-badge--{{ risk|lower }}">
-        Overall Risk: {{ risk }}
-    </div>
-    <div class="sev-counts">
-        <div class="sev-count sev-count--critical">
-            <span class="count-num">{{ sc.get('Critical', 0) }}</span>
-            <span class="count-label">Critical</span>
+<section class="results-overview" aria-label="Assessment risk overview">
+    <div class="risk-summary-card">
+        <div class="risk-gauge risk-gauge--{{ risk|lower }}" style="--score-angle: {{ risk_score * 3.6 }}deg" role="img" aria-label="Risk score {{ risk_score|round|int }} out of 100">
+            <div class="risk-gauge-center"><strong>{{ risk_score|round|int }}</strong><span>RISK SCORE</span></div>
         </div>
-        <div class="sev-count sev-count--high">
-            <span class="count-num">{{ sc.get('High', 0) }}</span>
-            <span class="count-label">High</span>
-        </div>
-        <div class="sev-count sev-count--medium">
-            <span class="count-num">{{ sc.get('Medium', 0) }}</span>
-            <span class="count-label">Medium</span>
-        </div>
-        <div class="sev-count sev-count--low">
-            <span class="count-num">{{ sc.get('Low', 0) }}</span>
-            <span class="count-label">Low</span>
+        <div class="risk-summary-copy">
+            <span class="section-kicker">ASSESSMENT SUMMARY</span>
+            <h2>{{ risk }} exposure</h2>
+            <p>Target <code>{{ scan.target }}</code></p>
+            <span class="risk-badge risk-badge--{{ risk|lower }}">{{ risk }} risk</span>
         </div>
     </div>
-</div>
+    <div class="results-severity-card">
+        <div class="chart-card-header">
+            <div><span class="section-kicker">FINDINGS</span><h2 class="panel-title">Severity profile</h2></div>
+            <span class="chart-total">{{ total_findings }} <small>total</small></span>
+        </div>
+        <div class="severity-stack" role="img" aria-label="{{ sc.get('Critical', 0) }} critical, {{ sc.get('High', 0) }} high, {{ sc.get('Medium', 0) }} medium, {{ sc.get('Low', 0) }} low findings">
+            {% if total_findings %}
+            <span class="severity-stack-segment severity-critical" style="width: {{ sc.get('Critical', 0) / total_findings * 100 }}%"></span>
+            <span class="severity-stack-segment severity-high" style="width: {{ sc.get('High', 0) / total_findings * 100 }}%"></span>
+            <span class="severity-stack-segment severity-medium" style="width: {{ sc.get('Medium', 0) / total_findings * 100 }}%"></span>
+            <span class="severity-stack-segment severity-low" style="width: {{ sc.get('Low', 0) / total_findings * 100 }}%"></span>
+            {% else %}<span class="severity-stack-empty"></span>{% endif %}
+        </div>
+        <div class="results-severity-grid">
+            {% for level in ('Critical', 'High', 'Medium', 'Low') %}
+            <div class="results-severity-item results-severity-item--{{ level|lower }}">
+                <span class="severity-key severity-key--{{ level|lower }}"></span>
+                <span>{{ level }}</span><strong>{{ sc.get(level, 0) }}</strong>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="results-signal-row">
+            <div><span>{{ results.get('ports', {}).get('open', [])|length }}</span><small>Open ports</small></div>
+            <div><span>{{ results.get('crawl', {}).get('pages_crawled', 0) }}</span><small>Pages crawled</small></div>
+            <div><span>{{ results.get('api', {}).get('found', [])|length }}</span><small>API endpoints</small></div>
+        </div>
+    </div>
+</section>
+
+<div class="results-target-line"><span class="console-indicator"></span><span>Assessment completed</span><span class="target-divider"></span><span>{{ scan.created_at }}</span><span class="target-divider"></span><span class="target-type">{{ scan.scan_type }}</span></div>
 
 <!-- Tab Navigation -->
 <div class="results-tabs">
     <button class="tab-btn active" data-tab="recon">Reconnaissance</button>
     <button class="tab-btn" data-tab="enum">Enumeration</button>
-    <button class="tab-btn" data-tab="vulns">Vulnerabilities</button>
+    <button class="tab-btn" data-tab="vulns">Vulnerabilities <span class="tab-count">{{ total_findings }}</span></button>
     <button class="tab-btn" data-tab="owasp">OWASP</button>
     <button class="tab-btn" data-tab="analysis">Analysis</button>
 </div>
@@ -362,15 +382,15 @@
     {% endif %}
 
     <div class="result-section">
-        <h3 class="section-title">📥 Download Full Reports</h3>
+        <h3 class="section-title">Download Full Reports</h3>
         <div class="download-grid">
             <a href="{{ url_for('download_pdf', scan_id=scan.id) }}" class="download-card">
-                <div class="dl-icon">📄</div>
+                <div class="dl-icon">PDF</div>
                 <div class="dl-label">PDF Report</div>
                 <div class="dl-desc">Formatted professional report</div>
             </a>
             <a href="{{ url_for('download_json', scan_id=scan.id) }}" class="download-card">
-                <div class="dl-icon">📋</div>
+                <div class="dl-icon">JSON</div>
                 <div class="dl-label">JSON Report</div>
                 <div class="dl-desc">Raw structured data</div>
             </a>

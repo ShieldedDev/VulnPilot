@@ -45,6 +45,47 @@
     </div>
 </div>
 
+<section class="dashboard-chart-grid" aria-label="Assessment analytics">
+    <div class="chart-card severity-chart-card">
+        <div class="chart-card-header">
+            <div><span class="section-kicker">FINDINGS OVERVIEW</span><h2 class="panel-title">Severity distribution</h2></div>
+            <span class="chart-total">{{ stats.findings }} <small>total</small></span>
+        </div>
+        {% set severity = stats.severity %}
+        {% set finding_total = stats.findings %}
+        <div class="severity-stack" role="img" aria-label="Finding severity distribution: {{ severity.Critical }} critical, {{ severity.High }} high, {{ severity.Medium }} medium, {{ severity.Low }} low">
+            {% if finding_total %}
+            <span class="severity-stack-segment severity-critical" style="width: {{ severity.Critical / finding_total * 100 }}%"></span>
+            <span class="severity-stack-segment severity-high" style="width: {{ severity.High / finding_total * 100 }}%"></span>
+            <span class="severity-stack-segment severity-medium" style="width: {{ severity.Medium / finding_total * 100 }}%"></span>
+            <span class="severity-stack-segment severity-low" style="width: {{ severity.Low / finding_total * 100 }}%"></span>
+            {% else %}
+            <span class="severity-stack-empty"></span>
+            {% endif %}
+        </div>
+        <div class="severity-legend">
+            {% for level in ('Critical', 'High', 'Medium', 'Low') %}
+            <div class="severity-legend-item"><span class="severity-key severity-key--{{ level|lower }}"></span><span>{{ level }}</span><strong>{{ severity[level] }}</strong></div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="chart-card assessment-health-card">
+        <div class="chart-card-header">
+            <div><span class="section-kicker">ASSESSMENT STATUS</span><h2 class="panel-title">Coverage snapshot</h2></div>
+            <span class="health-status"><span class="console-indicator"></span> Tracking</span>
+        </div>
+        <div class="health-metrics">
+            <div><span class="health-value">{{ stats.completed }}</span><span class="health-label">Completed</span></div>
+            <div><span class="health-value">{{ stats.running }}</span><span class="health-label">In progress</span></div>
+            <div><span class="health-value">{{ stats.critical }}</span><span class="health-label">Scans with criticals</span></div>
+        </div>
+        <div class="health-track" role="img" aria-label="{{ stats.completed }} of {{ stats.total }} assessments completed">
+            <span style="width: {{ (stats.completed / stats.total * 100) if stats.total else 0 }}%"></span>
+        </div>
+        <p class="chart-caption">Completed assessments across your workspace</p>
+    </div>
+</section>
+
 <div class="dashboard-grid">
     <div class="panel">
         <div class="panel-header">

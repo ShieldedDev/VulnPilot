@@ -1,0 +1,1372 @@
+{
+  "report_metadata": {
+    "title": "VulnPilot Assessment Report",
+    "scan_id": "fe397b98-7b0f-49d2-a2c4-9207b77cdffa",
+    "target": "http://testasp.vulnweb.com/",
+    "generated_at": "2026-09-29 10:12:25",
+    "tool": "VulnPilot Security Scanner v1.0",
+    "classification": "CONFIDENTIAL"
+  },
+  "executive_summary": {
+    "overview": "A comprehensive vulnerability assessment and penetration test was conducted against the target 'http://testasp.vulnweb.com/'. The assessment identified 9 security findings, comprising 0 Critical, 0 High, 3 Medium, and 6 Low severity issues. The overall risk rating for the target is assessed as <b>Medium</b>. Immediate remediation of Critical and High severity findings is strongly recommended.",
+    "risk": "Medium",
+    "total_findings": 9,
+    "severity_counts": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 3,
+      "Low": 6,
+      "Informational": 0
+    }
+  },
+  "scope": {
+    "target": "http://testasp.vulnweb.com/",
+    "scan_type": "Full Automated Assessment",
+    "phases": [
+      "Reconnaissance",
+      "Enumeration",
+      "Vulnerability Scanning",
+      "Analysis"
+    ]
+  },
+  "methodology": {
+    "approach": "Black-Box Testing",
+    "standards": [
+      "OWASP Top 10",
+      "PTES",
+      "NIST SP 800-115"
+    ],
+    "phases": {
+      "recon": "Web crawling, tech detection, subdomain discovery, dir fuzzing",
+      "enum": "Port scanning, service enumeration, OS fingerprinting, banner grabbing",
+      "vuln": "XSS, SQLi, IDOR, header analysis, SSL/TLS check, OWASP checks",
+      "analysis": "CVSS scoring, severity classification, PoC generation, remediation"
+    }
+  },
+  "findings": {
+    "reconnaissance": {
+      "technologies": {
+        "server": "Microsoft-IIS/8.5",
+        "cms": "",
+        "frameworks": [
+          "ASP.NET"
+        ],
+        "languages": [],
+        "headers": {
+          "Cache-Control": "private",
+          "Content-Type": "text/html",
+          "Server": "Microsoft-IIS/8.5",
+          "Set-Cookie": "ASPSESSIONIDCADTQCTA=MJBFOBHBGCEOBNFNBCCGDPNK; path=/",
+          "X-Powered-By": "ASP.NET",
+          "Date": "Tue, 29 Sep 2026 10:11:03 GMT",
+          "Connection": "close",
+          "Content-Length": "3538"
+        },
+        "powered_by": "ASP.NET",
+        "interesting_headers": {
+          "x-frame-options": "MISSING",
+          "content-security-policy": "MISSING",
+          "x-xss-protection": "MISSING",
+          "strict-transport-security": "MISSING",
+          "x-content-type-options": "MISSING",
+          "referrer-policy": "MISSING"
+        }
+      },
+      "crawl": {
+        "links": [
+          "http://testasp.vulnweb.com/Register.asp?RetURL=%2Fshowforum%2Easp%3Fid%3D0",
+          "http://testasp.vulnweb.com/Templatize.asp?item=html/about.html",
+          "http://testasp.vulnweb.com/Search.asp",
+          "http://testasp.vulnweb.com/Login.asp?RetURL=%2Fshowthread%2Easp%3Fid%3D3",
+          "http://testasp.vulnweb.com/Register.asp?RetURL=%2Fshowthread%2Easp%3Fid%3D3",
+          "http://testasp.vulnweb.com/showforum.asp?id=0",
+          "http://testasp.vulnweb.com/Login.asp?RetURL=%2Fshowforum%2Easp%3Fid%3D0",
+          "http://testasp.vulnweb.com/Register.asp?RetURL=%2FTemplatize%2Easp%3Fitem%3Dhtml%2Fabout%2Ehtml",
+          "http://testasp.vulnweb.com/Register.asp?RetURL=%2Fshowthread%2Easp%3Fid%3D1",
+          "http://testasp.vulnweb.com/Login.asp?RetURL=%2Fshowthread%2Easp%3Fid%3D2",
+          "http://testasp.vulnweb.com/Login.asp?RetURL=%2Fshowthread%2Easp%3Fid%3D1",
+          "http://testasp.vulnweb.com/Register.asp?RetURL=%2FSearch%2Easp%3F",
+          "http://testasp.vulnweb.com/showthread.asp?id=2",
+          "http://testasp.vulnweb.com/Register.asp?RetURL=%2Fshowthread%2Easp%3Fid%3D0",
+          "http://testasp.vulnweb.com/Register.asp?RetURL=%2Fshowthread%2Easp%3Fid%3D2",
+          "http://testasp.vulnweb.com/showforum.asp?id=2",
+          "http://testasp.vulnweb.com/Login.asp?RetURL=%2FDefault%2Easp%3F",
+          "http://testasp.vulnweb.com/Login.asp?RetURL=%2FSearch%2Easp%3F",
+          "http://testasp.vulnweb.com/Register.asp?RetURL=%2Fshowforum%2Easp%3Fid%3D1",
+          "http://testasp.vulnweb.com/Default.asp",
+          "http://testasp.vulnweb.com/styles.css",
+          "http://testasp.vulnweb.com/showforum.asp?id=1",
+          "http://testasp.vulnweb.com/Register.asp?RetURL=%2Fshowforum%2Easp%3Fid%3D2",
+          "http://testasp.vulnweb.com/Login.asp?RetURL=%2Fshowforum%2Easp%3Fid%3D1",
+          "http://testasp.vulnweb.com/Login.asp?RetURL=%2Fshowforum%2Easp%3Fid%3D2",
+          "http://testasp.vulnweb.com/Login.asp?RetURL=%2FTemplatize%2Easp%3Fitem%3Dhtml%2Fabout%2Ehtml",
+          "http://testasp.vulnweb.com/showthread.asp?id=1",
+          "http://testasp.vulnweb.com/Register.asp?RetURL=%2FDefault%2Easp%3F",
+          "http://testasp.vulnweb.com/showthread.asp?id=3",
+          "http://testasp.vulnweb.com/Login.asp?RetURL=%2Fshowthread%2Easp%3Fid%3D0",
+          "http://testasp.vulnweb.com/showthread.asp?id=0"
+        ],
+        "forms": [
+          {
+            "action": "http://testasp.vulnweb.com/Search.asp",
+            "method": "GET",
+            "inputs": [
+              "tfSearch"
+            ]
+          },
+          {
+            "action": "http://testasp.vulnweb.com/Login.asp?RetURL=%2FDefault%2Easp%3F",
+            "method": "GET",
+            "inputs": [
+              "tfUName",
+              "tfUPass"
+            ]
+          },
+          {
+            "action": "http://testasp.vulnweb.com/Register.asp?RetURL=%2FDefault%2Easp%3F",
+            "method": "GET",
+            "inputs": [
+              "tfUName",
+              "tfRName",
+              "tfEmail",
+              "tfUPass"
+            ]
+          },
+          {
+            "action": "http://testasp.vulnweb.com/Login.asp?RetURL=%2FTemplatize%2Easp%3Fitem%3Dhtml%2Fabout%2Ehtml",
+            "method": "GET",
+            "inputs": [
+              "tfUName",
+              "tfUPass"
+            ]
+          },
+          {
+            "action": "http://testasp.vulnweb.com/Register.asp?RetURL=%2FTemplatize%2Easp%3Fitem%3Dhtml%2Fabout%2Ehtml",
+            "method": "GET",
+            "inputs": [
+              "tfUName",
+              "tfRName",
+              "tfEmail",
+              "tfUPass"
+            ]
+          },
+          {
+            "action": "http://testasp.vulnweb.com/Login.asp?RetURL=%2FSearch%2Easp%3F",
+            "method": "GET",
+            "inputs": [
+              "tfUName",
+              "tfUPass"
+            ]
+          },
+          {
+            "action": "http://testasp.vulnweb.com/Register.asp?RetURL=%2FSearch%2Easp%3F",
+            "method": "GET",
+            "inputs": [
+              "tfUName",
+              "tfRName",
+              "tfEmail",
+              "tfUPass"
+            ]
+          },
+          {
+            "action": "http://testasp.vulnweb.com/Login.asp?RetURL=%2Fshowforum%2Easp%3Fid%3D0",
+            "method": "GET",
+            "inputs": [
+              "tfUName",
+              "tfUPass"
+            ]
+          },
+          {
+            "action": "http://testasp.vulnweb.com/Register.asp?RetURL=%2Fshowforum%2Easp%3Fid%3D0",
+            "method": "GET",
+            "inputs": [
+              "tfUName",
+              "tfRName",
+              "tfEmail",
+              "tfUPass"
+            ]
+          },
+          {
+            "action": "http://testasp.vulnweb.com/Login.asp?RetURL=%2Fshowforum%2Easp%3Fid%3D1",
+            "method": "GET",
+            "inputs": [
+              "tfUName",
+              "tfUPass"
+            ]
+          },
+          {
+            "action": "http://testasp.vulnweb.com/Register.asp?RetURL=%2Fshowforum%2Easp%3Fid%3D1",
+            "method": "GET",
+            "inputs": [
+              "tfUName",
+              "tfRName",
+              "tfEmail",
+              "tfUPass"
+            ]
+          },
+          {
+            "action": "http://testasp.vulnweb.com/Login.asp?RetURL=%2Fshowforum%2Easp%3Fid%3D2",
+            "method": "GET",
+            "inputs": [
+              "tfUName",
+              "tfUPass"
+            ]
+          },
+          {
+            "action": "http://testasp.vulnweb.com/Register.asp?RetURL=%2Fshowforum%2Easp%3Fid%3D2",
+            "method": "GET",
+            "inputs": [
+              "tfUName",
+              "tfRName",
+              "tfEmail",
+              "tfUPass"
+            ]
+          }
+        ],
+        "pages_crawled": 24
+      },
+      "subdomains": {
+        "found": [
+          {
+            "subdomain": "www.vulnweb.com",
+            "ip": "44.228.249.3",
+            "status": "resolved"
+          }
+        ],
+        "checked": 20,
+        "base_domain": "vulnweb.com"
+      },
+      "directories": {
+        "found": [
+          {
+            "path": "robots.txt",
+            "url": "http://testasp.vulnweb.com/robots.txt",
+            "status": 200,
+            "interesting": true
+          }
+        ],
+        "total_checked": 29,
+        "interesting": [
+          {
+            "path": "robots.txt",
+            "url": "http://testasp.vulnweb.com/robots.txt",
+            "status": 200,
+            "interesting": true
+          }
+        ]
+      }
+    },
+    "enumeration": {
+      "ports": {
+        "host": "testasp.vulnweb.com",
+        "ip": "44.238.29.244",
+        "open": [
+          80
+        ],
+        "closed": [
+          21,
+          22,
+          23,
+          25,
+          53,
+          110,
+          135,
+          139,
+          143,
+          443,
+          445,
+          993,
+          995,
+          1433,
+          1521,
+          3306,
+          3389,
+          5432,
+          5900,
+          6379,
+          8080,
+          8443,
+          8888,
+          9200,
+          27017
+        ],
+        "total_scanned": 26
+      },
+      "services": {
+        "80": {
+          "service": "HTTP",
+          "banner": "HTTP/1.1 200 OK\r\nContent-Length: 701\r\nContent-Type: text/html\r\nLast-Modified: Mon, 16 Nov 2020 14:34:05 GMT\r\nAccept-Ranges: bytes\r\nETag: \"c6bdf18825bcd61:0\"\r\nServer: Microsoft-IIS/8.5\r\nX-Powered-By: A",
+          "risk": "Low"
+        }
+      },
+      "os_detection": {
+        "os": "Windows",
+        "confidence": "Medium",
+        "hints": [
+          "Server header: microsoft-iis/8.5"
+        ]
+      }
+    },
+    "vulnerabilities": {
+      "xss": {
+        "findings": [],
+        "payloads_tested": 6
+      },
+      "sqli": {
+        "findings": [
+          {
+            "id": "dc0ead8e-b5c9-4b92-b124-268d4c9a6077",
+            "title": "Blind SQLi timing check simulation",
+            "severity": "Informational",
+            "confidence": "Low",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 0.0,
+              "vector": ""
+            },
+            "cwe": "CWE-89",
+            "cve": [],
+            "target": "http://testasp.vulnweb.com/",
+            "endpoint": "http://testasp.vulnweb.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "Timing-based SQLi validation was simulated and not confirmed against a live vulnerable endpoint."
+            ],
+            "description": "A blind timing-based SQL injection payload was simulated and should only be considered a candidate indicator.",
+            "impact": "A time-delayed database attack may be feasible when the application is vulnerable.",
+            "remediation": "Validate with a safe, consented test target and confirm differential timing evidence before reporting.",
+            "references": [],
+            "detection_method": "simulated_timing_check",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "type": "simulated"
+            }
+          }
+        ],
+        "payloads_tested": 7
+      },
+      "idor": {
+        "findings": [],
+        "patterns_tested": 10
+      },
+      "headers": {
+        "findings": [
+          {
+            "id": "d534d80e-6714-4ca5-ab8d-412c3a5a3247",
+            "title": "Missing X-FRAME-OPTIONS header",
+            "severity": "Medium",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 4.3,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "http://testasp.vulnweb.com/",
+            "endpoint": "http://testasp.vulnweb.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "X-FRAME-OPTIONS header not present in the response."
+            ],
+            "description": "Missing X-Frame-Options - Clickjacking vulnerability",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Add: X-Frame-Options: DENY or SAMEORIGIN",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "x-frame-options"
+            }
+          },
+          {
+            "id": "99ac12d3-e769-42e4-9493-266310e84170",
+            "title": "Missing CONTENT-SECURITY-POLICY header",
+            "severity": "Medium",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 5.0,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "http://testasp.vulnweb.com/",
+            "endpoint": "http://testasp.vulnweb.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "CONTENT-SECURITY-POLICY header not present in the response."
+            ],
+            "description": "Missing Content-Security-Policy header",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Implement a strict CSP policy",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "content-security-policy"
+            }
+          },
+          {
+            "id": "f7ee2824-6ae1-4969-9ae5-27dc56233a77",
+            "title": "Missing X-CONTENT-TYPE-OPTIONS header",
+            "severity": "Low",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 3.1,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "http://testasp.vulnweb.com/",
+            "endpoint": "http://testasp.vulnweb.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "X-CONTENT-TYPE-OPTIONS header not present in the response."
+            ],
+            "description": "Missing X-Content-Type-Options - MIME sniffing vulnerability",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Add: X-Content-Type-Options: nosniff",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "x-content-type-options"
+            }
+          },
+          {
+            "id": "feb03a5b-6af4-4c9d-8b1a-a3437ff4f763",
+            "title": "Missing STRICT-TRANSPORT-SECURITY header",
+            "severity": "Medium",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 4.8,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "http://testasp.vulnweb.com/",
+            "endpoint": "http://testasp.vulnweb.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "STRICT-TRANSPORT-SECURITY header not present in the response."
+            ],
+            "description": "Missing HSTS header - downgrade attack possible",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "strict-transport-security"
+            }
+          },
+          {
+            "id": "9ae64a95-d8a8-461a-91f3-fd959bfbb271",
+            "title": "Missing X-XSS-PROTECTION header",
+            "severity": "Low",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 3.1,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "http://testasp.vulnweb.com/",
+            "endpoint": "http://testasp.vulnweb.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "X-XSS-PROTECTION header not present in the response."
+            ],
+            "description": "Missing X-XSS-Protection header",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Add: X-XSS-Protection: 1; mode=block",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "x-xss-protection"
+            }
+          },
+          {
+            "id": "e38d78e5-f643-4996-ad10-ce8e537680c2",
+            "title": "Missing REFERRER-POLICY header",
+            "severity": "Low",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 2.6,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "http://testasp.vulnweb.com/",
+            "endpoint": "http://testasp.vulnweb.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "REFERRER-POLICY header not present in the response."
+            ],
+            "description": "Missing Referrer-Policy header - information leakage",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Add: Referrer-Policy: strict-origin-when-cross-origin",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "referrer-policy"
+            }
+          },
+          {
+            "id": "cb6bb475-ac98-481d-81f3-78b071c076c1",
+            "title": "Missing PERMISSIONS-POLICY header",
+            "severity": "Low",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 2.0,
+              "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            "cwe": "CWE-693",
+            "cve": [],
+            "target": "http://testasp.vulnweb.com/",
+            "endpoint": "http://testasp.vulnweb.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "PERMISSIONS-POLICY header not present in the response."
+            ],
+            "description": "Missing Permissions-Policy header",
+            "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+            "remediation": "Add: Permissions-Policy: camera=(), microphone=(), geolocation=()",
+            "references": [],
+            "detection_method": "header_misconfiguration",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "permissions-policy"
+            }
+          },
+          {
+            "id": "32f61af3-03ee-4925-8e72-ec70b78d4e66",
+            "title": "Technology disclosure via Server header",
+            "severity": "Low",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 2.0,
+              "vector": ""
+            },
+            "cwe": "CWE-200",
+            "cve": [],
+            "target": "http://testasp.vulnweb.com/",
+            "endpoint": "http://testasp.vulnweb.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "Server header exposed value: Microsoft-IIS/8.5."
+            ],
+            "description": "Server header reveals: Microsoft-IIS/8.5",
+            "impact": "The exact server and version may aid attackers in targeting known vulnerabilities.",
+            "remediation": "Remove or obfuscate the Server header.",
+            "references": [],
+            "detection_method": "header_analysis",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "Server"
+            }
+          },
+          {
+            "id": "18c5acc8-6866-4b11-9be9-08a64d60603e",
+            "title": "Technology disclosure via X-Powered-By",
+            "severity": "Low",
+            "confidence": "High",
+            "cvss": {
+              "version": "CVSS v3.1",
+              "score": 2.0,
+              "vector": ""
+            },
+            "cwe": "CWE-200",
+            "cve": [],
+            "target": "http://testasp.vulnweb.com/",
+            "endpoint": "http://testasp.vulnweb.com",
+            "parameter": "",
+            "method": "GET",
+            "payload": "",
+            "request": "",
+            "response": "",
+            "evidence": [
+              "X-Powered-By exposed value: ASP.NET."
+            ],
+            "description": "X-Powered-By reveals: ASP.NET",
+            "impact": "Technology stack details can help attackers target known framework weaknesses.",
+            "remediation": "Remove the X-Powered-By header from production responses.",
+            "references": [],
+            "detection_method": "header_analysis",
+            "status": "open",
+            "source": "scanner",
+            "category": "",
+            "raw": {
+              "header": "X-Powered-By"
+            }
+          }
+        ],
+        "headers_checked": 7
+      },
+      "ssl_tls": {
+        "info": {
+          "enabled": false,
+          "version": "",
+          "cipher": "",
+          "cert_valid": false,
+          "cert_issuer": "",
+          "cert_expiry": "",
+          "issues": [
+            "timed out"
+          ]
+        },
+        "findings": []
+      },
+      "api_endpoints": {
+        "found": [],
+        "checked": 15
+      },
+      "owasp": {
+        "findings": [
+          {
+            "category": "A01 - Broken Access Control",
+            "checks": [
+              "IDOR testing",
+              "Directory traversal",
+              "Admin panel exposure"
+            ],
+            "status": "Checked",
+            "severity": "High",
+            "cvss": 7.5
+          },
+          {
+            "category": "A02 - Cryptographic Failures",
+            "checks": [
+              "HTTPS check",
+              "Cookie security flags"
+            ],
+            "status": "HTTPS not enforced",
+            "severity": "High",
+            "cvss": 7.5
+          },
+          {
+            "category": "A03 - Injection",
+            "checks": [
+              "SQL Injection",
+              "XSS",
+              "Command Injection"
+            ],
+            "status": "Checked via payload testing",
+            "severity": "Critical",
+            "cvss": 9.8
+          },
+          {
+            "category": "A05 - Security Misconfiguration",
+            "checks": [
+              "Default credentials",
+              "Debug mode",
+              "Error exposure",
+              "Directory listing"
+            ],
+            "status": "Checked",
+            "severity": "Medium",
+            "cvss": 5.3
+          },
+          {
+            "category": "A06 - Vulnerable and Outdated Components",
+            "checks": [
+              "Technology version detection"
+            ],
+            "status": "Component versions analyzed",
+            "severity": "Medium",
+            "cvss": 5.5
+          },
+          {
+            "category": "A08 - Software and Data Integrity Failures",
+            "checks": [
+              "Subresource Integrity (SRI)",
+              "Update mechanism"
+            ],
+            "status": "SRI check performed",
+            "severity": "Medium",
+            "cvss": 4.8
+          },
+          {
+            "category": "A09 - Security Logging and Monitoring Failures",
+            "checks": [
+              "Error page verbosity",
+              "Log exposure"
+            ],
+            "status": "Manual review recommended",
+            "severity": "Medium",
+            "cvss": 4.3
+          },
+          {
+            "category": "A10 - Server-Side Request Forgery (SSRF)",
+            "checks": [
+              "URL parameter injection",
+              "Webhook endpoints"
+            ],
+            "status": "Basic SSRF patterns checked",
+            "severity": "High",
+            "cvss": 7.2
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "vulnerabilities": [
+        {
+          "id": "d534d80e-6714-4ca5-ab8d-412c3a5a3247",
+          "title": "Missing X-FRAME-OPTIONS header",
+          "severity": "Medium",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 4.3,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "X-FRAME-OPTIONS header not present in the response."
+          ],
+          "description": "Missing X-Frame-Options - Clickjacking vulnerability",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: X-Frame-Options: DENY or SAMEORIGIN",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "x-frame-options"
+          }
+        },
+        {
+          "id": "99ac12d3-e769-42e4-9493-266310e84170",
+          "title": "Missing CONTENT-SECURITY-POLICY header",
+          "severity": "Medium",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 5.0,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "CONTENT-SECURITY-POLICY header not present in the response."
+          ],
+          "description": "Missing Content-Security-Policy header",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Implement a strict CSP policy",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "content-security-policy"
+          }
+        },
+        {
+          "id": "feb03a5b-6af4-4c9d-8b1a-a3437ff4f763",
+          "title": "Missing STRICT-TRANSPORT-SECURITY header",
+          "severity": "Medium",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 4.8,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "STRICT-TRANSPORT-SECURITY header not present in the response."
+          ],
+          "description": "Missing HSTS header - downgrade attack possible",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "strict-transport-security"
+          }
+        },
+        {
+          "id": "f7ee2824-6ae1-4969-9ae5-27dc56233a77",
+          "title": "Missing X-CONTENT-TYPE-OPTIONS header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 3.1,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "X-CONTENT-TYPE-OPTIONS header not present in the response."
+          ],
+          "description": "Missing X-Content-Type-Options - MIME sniffing vulnerability",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: X-Content-Type-Options: nosniff",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "x-content-type-options"
+          }
+        },
+        {
+          "id": "9ae64a95-d8a8-461a-91f3-fd959bfbb271",
+          "title": "Missing X-XSS-PROTECTION header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 3.1,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "X-XSS-PROTECTION header not present in the response."
+          ],
+          "description": "Missing X-XSS-Protection header",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: X-XSS-Protection: 1; mode=block",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "x-xss-protection"
+          }
+        },
+        {
+          "id": "e38d78e5-f643-4996-ad10-ce8e537680c2",
+          "title": "Missing REFERRER-POLICY header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 2.6,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "REFERRER-POLICY header not present in the response."
+          ],
+          "description": "Missing Referrer-Policy header - information leakage",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: Referrer-Policy: strict-origin-when-cross-origin",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "referrer-policy"
+          }
+        },
+        {
+          "id": "cb6bb475-ac98-481d-81f3-78b071c076c1",
+          "title": "Missing PERMISSIONS-POLICY header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 2.0,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "PERMISSIONS-POLICY header not present in the response."
+          ],
+          "description": "Missing Permissions-Policy header",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: Permissions-Policy: camera=(), microphone=(), geolocation=()",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "permissions-policy"
+          }
+        },
+        {
+          "id": "32f61af3-03ee-4925-8e72-ec70b78d4e66",
+          "title": "Technology disclosure via Server header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 2.0,
+            "vector": ""
+          },
+          "cwe": "CWE-200",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "Server header exposed value: Microsoft-IIS/8.5."
+          ],
+          "description": "Server header reveals: Microsoft-IIS/8.5",
+          "impact": "The exact server and version may aid attackers in targeting known vulnerabilities.",
+          "remediation": "Remove or obfuscate the Server header.",
+          "references": [],
+          "detection_method": "header_analysis",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "Server"
+          }
+        },
+        {
+          "id": "18c5acc8-6866-4b11-9be9-08a64d60603e",
+          "title": "Technology disclosure via X-Powered-By",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 2.0,
+            "vector": ""
+          },
+          "cwe": "CWE-200",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "X-Powered-By exposed value: ASP.NET."
+          ],
+          "description": "X-Powered-By reveals: ASP.NET",
+          "impact": "Technology stack details can help attackers target known framework weaknesses.",
+          "remediation": "Remove the X-Powered-By header from production responses.",
+          "references": [],
+          "detection_method": "header_analysis",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "X-Powered-By"
+          }
+        }
+      ],
+      "severity_counts": {
+        "Critical": 0,
+        "High": 0,
+        "Medium": 3,
+        "Low": 6,
+        "Informational": 0
+      },
+      "risk_score": 18,
+      "overall_risk": "Medium",
+      "poc_examples": [],
+      "remediation_priority": [
+        {
+          "id": "d534d80e-6714-4ca5-ab8d-412c3a5a3247",
+          "title": "Missing X-FRAME-OPTIONS header",
+          "severity": "Medium",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 4.3,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "X-FRAME-OPTIONS header not present in the response."
+          ],
+          "description": "Missing X-Frame-Options - Clickjacking vulnerability",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: X-Frame-Options: DENY or SAMEORIGIN",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "x-frame-options"
+          }
+        },
+        {
+          "id": "99ac12d3-e769-42e4-9493-266310e84170",
+          "title": "Missing CONTENT-SECURITY-POLICY header",
+          "severity": "Medium",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 5.0,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "CONTENT-SECURITY-POLICY header not present in the response."
+          ],
+          "description": "Missing Content-Security-Policy header",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Implement a strict CSP policy",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "content-security-policy"
+          }
+        },
+        {
+          "id": "feb03a5b-6af4-4c9d-8b1a-a3437ff4f763",
+          "title": "Missing STRICT-TRANSPORT-SECURITY header",
+          "severity": "Medium",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 4.8,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "STRICT-TRANSPORT-SECURITY header not present in the response."
+          ],
+          "description": "Missing HSTS header - downgrade attack possible",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "strict-transport-security"
+          }
+        },
+        {
+          "id": "f7ee2824-6ae1-4969-9ae5-27dc56233a77",
+          "title": "Missing X-CONTENT-TYPE-OPTIONS header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 3.1,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "X-CONTENT-TYPE-OPTIONS header not present in the response."
+          ],
+          "description": "Missing X-Content-Type-Options - MIME sniffing vulnerability",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: X-Content-Type-Options: nosniff",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "x-content-type-options"
+          }
+        },
+        {
+          "id": "9ae64a95-d8a8-461a-91f3-fd959bfbb271",
+          "title": "Missing X-XSS-PROTECTION header",
+          "severity": "Low",
+          "confidence": "High",
+          "cvss": {
+            "version": "CVSS v3.1",
+            "score": 3.1,
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "cwe": "CWE-693",
+          "cve": [],
+          "target": "http://testasp.vulnweb.com/",
+          "endpoint": "http://testasp.vulnweb.com",
+          "parameter": "",
+          "method": "GET",
+          "payload": "",
+          "request": "",
+          "response": "",
+          "evidence": [
+            "X-XSS-PROTECTION header not present in the response."
+          ],
+          "description": "Missing X-XSS-Protection header",
+          "impact": "The application is missing a baseline security control that helps reduce browser-based attacks.",
+          "remediation": "Add: X-XSS-Protection: 1; mode=block",
+          "references": [],
+          "detection_method": "header_misconfiguration",
+          "status": "open",
+          "source": "scanner",
+          "category": "",
+          "raw": {
+            "header": "x-xss-protection"
+          }
+        }
+      ]
+    }
+  },
+  "risk_summary": {
+    "overall": "Medium",
+    "score": 18,
+    "counts": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 3,
+      "Low": 6,
+      "Informational": 0
+    }
+  },
+  "remediation_recommendations": [
+    {
+      "finding": "Finding",
+      "priority": "Medium",
+      "recommendation": "Add: X-Frame-Options: DENY or SAMEORIGIN",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 4.3,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Medium",
+      "recommendation": "Implement a strict CSP policy",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 5.0,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Medium",
+      "recommendation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 4.8,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Low",
+      "recommendation": "Add: X-Content-Type-Options: nosniff",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 3.1,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Low",
+      "recommendation": "Add: X-XSS-Protection: 1; mode=block",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 3.1,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Low",
+      "recommendation": "Add: Referrer-Policy: strict-origin-when-cross-origin",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 2.6,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Low",
+      "recommendation": "Add: Permissions-Policy: camera=(), microphone=(), geolocation=()",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 2.0,
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Low",
+      "recommendation": "Remove or obfuscate the Server header.",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 2.0,
+        "vector": ""
+      }
+    },
+    {
+      "finding": "Finding",
+      "priority": "Low",
+      "recommendation": "Remove the X-Powered-By header from production responses.",
+      "cvss": {
+        "version": "CVSS v3.1",
+        "score": 2.0,
+        "vector": ""
+      }
+    }
+  ],
+  "conclusion": "The automated VulnPilot assessment of 'http://testasp.vulnweb.com/' has been completed. The target demonstrates a Medium overall security posture. Key areas requiring immediate attention include: 0 critical vulnerabilities and 0 high-severity issues. It is recommended that the development and security teams prioritize remediation of critical and high-severity findings before re-assessment. A follow-up pentest is advised after remediation to validate that all identified vulnerabilities have been resolved. All testing was performed in a controlled, authorized manner following ethical security research practices."
+}

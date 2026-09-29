@@ -6,6 +6,12 @@
     align-items: start;
 }
 
+.scan-layout > .panel { animation: surface-enter 420ms ease both; }
+.scan-layout > .panel:nth-child(2) { animation-delay: 80ms; }
+.scan-layout > .panel.is-visible { animation: scan-panel-enter 360ms cubic-bezier(.2,.75,.25,1) both; }
+
+@keyframes scan-panel-enter { from { opacity: 0; transform: translateY(12px) scale(0.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
 .scan-form { padding: 1.5rem; }
 
 /* ─── Phases ─────────────────────────────────────────── */
@@ -26,10 +32,10 @@
     text-align: center;
 }
 
-.phase-badge--recon    { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
-.phase-badge--enum     { background: rgba(63,185,80,0.1); color: var(--success); border: 1px solid rgba(63,185,80,0.2); }
-.phase-badge--vuln     { background: rgba(248,81,73,0.1); color: var(--danger); border: 1px solid rgba(248,81,73,0.2); }
-.phase-badge--analysis { background: rgba(240,165,0,0.1); color: var(--medium); border: 1px solid rgba(240,165,0,0.2); }
+.phase-badge--recon    { background: rgba(125,200,255,0.08); color: var(--accent-strong); border: 1px solid rgba(125,200,255,0.18); }
+.phase-badge--enum     { background: rgba(110,231,168,0.08); color: var(--success); border: 1px solid rgba(110,231,168,0.18); }
+.phase-badge--vuln     { background: rgba(255,107,107,0.08); color: var(--danger); border: 1px solid rgba(255,107,107,0.18); }
+.phase-badge--analysis { background: rgba(247,200,115,0.08); color: var(--medium); border: 1px solid rgba(247,200,115,0.18); }
 
 /* ─── Consent ────────────────────────────────────────── */
 .consent-box {
@@ -51,7 +57,8 @@
 .btn-launch {
     font-size: 1rem;
     padding: 0.75rem;
-    background: linear-gradient(135deg, #00d4ff, #0066ff);
+    background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+    color: #041118;
     letter-spacing: 0.03em;
     transition: opacity 0.2s, transform 0.1s;
 }
@@ -70,6 +77,8 @@
     color: var(--info);
     animation: pulse 2s infinite;
 }
+
+.scan-status-complete { background: rgba(110,231,168,0.12); color: var(--success); animation: none; }
 
 @keyframes pulse {
     0%, 100% { opacity: 1; }
@@ -92,11 +101,27 @@
 }
 
 .progress-bar-fill {
+    position: relative;
     height: 100%;
-    background: linear-gradient(90deg, #00d4ff, #0066ff);
+    background: linear-gradient(90deg, var(--accent), var(--accent-strong));
     border-radius: 4px;
     transition: width 0.5s ease;
+    overflow: hidden;
 }
+
+.progress-bar-fill::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,0.55) 50%, transparent 80%);
+    transform: translateX(-100%);
+}
+
+.scan-progress-active .progress-bar-fill::after {
+    animation: progress-sheen 1.7s ease-in-out infinite;
+}
+
+@keyframes progress-sheen { to { transform: translateX(100%); } }
 
 .progress-percent {
     font-size: 0.8rem;
@@ -137,6 +162,9 @@
     border-color: var(--accent);
     animation: pulseDot 1s infinite;
 }
+
+.phase-indicator { transition: color 200ms ease, transform 200ms ease; }
+.phase-indicator.active { color: var(--text-primary); transform: translateY(-2px); }
 
 .phase-indicator.done .phase-dot {
     background: var(--success);
@@ -181,27 +209,31 @@
     margin-left: auto;
 }
 
+.log-timestamp { color: var(--text-muted); }
+
 .terminal-body {
-    background: #0d1117;
+    background: #061018;
     padding: 1rem;
     font-family: var(--font-mono);
     font-size: 0.8rem;
-    color: #7ee787;
+    color: var(--success);
     max-height: 300px;
     overflow-y: auto;
     line-height: 1.8;
 }
 
-.log-prompt { color: #00d4ff; }
+.log-prompt { color: var(--accent); }
 
-.log-line { display: block; margin-bottom: 0.1rem; }
-.log-line--recon    { color: #79c0ff; }
-.log-line--enum     { color: #7ee787; }
-.log-line--vuln     { color: #ffa657; }
-.log-line--analysis { color: #d2a8ff; }
-.log-line--report   { color: #f0e040; }
-.log-line--complete { color: #3fb950; font-weight: bold; }
-.log-line--init     { color: #8b949e; }
+.log-line { display: block; margin-bottom: 0.1rem; animation: log-arrive 220ms ease both; }
+.log-line--recon    { color: var(--accent-strong); }
+.log-line--enum     { color: var(--success); }
+.log-line--vuln     { color: var(--warning); }
+.log-line--analysis { color: #c1a5ff; }
+.log-line--report   { color: #f7c873; }
+.log-line--complete { color: var(--success); font-weight: bold; }
+.log-line--init     { color: var(--text-muted); }
+
+@keyframes log-arrive { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: translateX(0); } }
 
 /* ─── Complete Actions ───────────────────────────────── */
 .scan-actions {

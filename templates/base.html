@@ -10,33 +10,51 @@
 <body class="{% block body_class %}{% endblock %}">
 
 {% if session.user_id %}
-<nav class="navbar">
-    <div class="nav-brand">
-        <span class="nav-mark">VP</span>
-        <span class="nav-title">VulnPilot</span>
-    </div>
-    <ul class="nav-links">
-        <li><a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">
-            Dashboard
-        </a></li>
-        <li><a href="{{ url_for('scan') }}" class="{% if request.endpoint == 'scan' %}active{% endif %}">
-            New Scan
-        </a></li>
-        <li><a href="{{ url_for('history') }}" class="{% if request.endpoint == 'history' %}active{% endif %}">
-            History
-        </a></li>
-        <li><a href="{{ url_for('help_page') }}" class="{% if request.endpoint == 'help_page' %}active{% endif %}">
-            Help
-        </a></li>
-    </ul>
-    <div class="nav-user">
-        <span class="user-badge">{{ session.username }}</span>
-        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
-    </div>
-</nav>
-{% endif %}
+<div class="app-shell">
+    <aside class="sidebar">
+        <a class="nav-brand" href="{{ url_for('dashboard') }}" aria-label="VulnPilot dashboard">
+            <span class="nav-mark">VP</span>
+            <span class="nav-title">VulnPilot</span>
+        </a>
+        <div class="sidebar-section-label">Workspace</div>
+        <nav class="side-nav" aria-label="Main navigation">
+            <a href="{{ url_for('dashboard') }}" class="side-nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                <span class="nav-glyph" aria-hidden="true">01</span><span>Overview</span>
+            </a>
+            <a href="{{ url_for('scan') }}" class="side-nav-link {% if request.endpoint == 'scan' %}active{% endif %}">
+                <span class="nav-glyph" aria-hidden="true">02</span><span>New assessment</span>
+            </a>
+            <a href="{{ url_for('history') }}" class="side-nav-link {% if request.endpoint == 'history' %}active{% endif %}">
+                <span class="nav-glyph" aria-hidden="true">03</span><span>Scan history</span>
+            </a>
+            <a href="{{ url_for('help_page') }}" class="side-nav-link {% if request.endpoint == 'help_page' %}active{% endif %}">
+                <span class="nav-glyph" aria-hidden="true">04</span><span>Methodology</span>
+            </a>
+        </nav>
 
+        <div class="sidebar-console" aria-label="VulnPilot console status">
+            <div class="console-heading"><span class="console-indicator"></span> OPERATOR CONSOLE</div>
+            <div class="console-line"><span>engine</span><strong>VulnPilot</strong></div>
+            <div class="console-line"><span>session</span><strong>Authenticated</strong></div>
+            <div class="console-line"><span>scope</span><strong>Explicit authorization</strong></div>
+            <div class="console-prompt"><span>operator@vulnpilot</span>:~$ <i>_</i></div>
+        </div>
+
+        <div class="sidebar-account">
+            <span class="account-avatar">{{ session.username[:1]|upper }}</span>
+            <span class="account-name">{{ session.username }}</span>
+            <a href="{{ url_for('logout') }}" class="btn-logout" aria-label="Log out">Exit</a>
+        </div>
+    </aside>
+    <div class="workspace">
+        <header class="topbar">
+            <div class="topbar-context"><span class="topbar-kicker">SECURITY OPERATIONS</span><span class="topbar-separator">/</span><span>{{ request.endpoint|replace('_', ' ')|title }}</span></div>
+            <span class="topbar-status"><span class="console-indicator"></span> Console ready</span>
+        </header>
+        <main class="main-content">
+{% else %}
 <main class="main-content">
+{% endif %}
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -45,7 +63,13 @@
         {% endif %}
     {% endwith %}
     {% block content %}{% endblock %}
+{% if session.user_id %}
+        </main>
+    </div>
+</div>
+{% else %}
 </main>
+{% endif %}
 
 {% block extra_js %}{% endblock %}
 </body>
