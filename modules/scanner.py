@@ -4,11 +4,53 @@ import socket
 import ssl
 import urllib.error
 import urllib.parse
+from difflib import SequenceMatcher
+from html.parser import HTMLParser
 import urllib.request
 from urllib.parse import urljoin, urlparse
 
 from modules.config import ScannerConfig
 from modules.finding import Finding
+
+
+class _SurfaceParser(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.links = []
+        self.forms = []
+        self.form = None
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        if tag.lower() == 'a' and attributes.get('href'):
+            self.links.append(attributes['href'])
+        if tag.lower() == 'form':
+            self.form = {
+                'action': attributes.get('action', ''),
+                'method': attributes.get('method', 'GET').upper(),
+                'inputs': [],
+                'fields': [],
+            }
+        elif self.form and tag.lower() in {'input', 'textarea', 'select'}:
+            name = attributes.get('name')
+            if name:
+                self.form['inputs'].append(name)
+                self.form['fields'].append({
+                    'name': name,
+                    'value': attributes.get('value', ''),
+                    'type': attributes.get('type', tag).lower(),
+                })
+
+    def handle_endtag(self, tag):
+        if tag.lower() == 'form' and self.form:
+            self.forms.append(self.form)
+            self.form = None
+
+    def close(self):
+        super().close()
+        if self.form:
+            self.forms.append(self.form)
+            self.form = None
 
 
 class VAPTScanner:
@@ -23,13 +65,12 @@ class VAPTScanner:
     ]
 
     SQLI_PAYLOADS = [
-        "' OR '1'='1",
-        "' OR 1=1--",
-        '" OR "1"="1',
-        "1' ORDER BY 1--",
-        "1 UNION SELECT NULL--",
-        "' AND SLEEP(2)--",
-        "'; DROP TABLE users--",
+        "'",
+        "' AND '1'='1",
+        "' AND '1'='2",
+        '"',
+        '" AND "1"="1',
+        '" AND "1"="2',
     ]
 
     COMMON_DIRS = [
@@ -50,17 +91,18 @@ class VAPTScanner:
                     993, 995, 1433, 1521, 3306, 3389, 5432, 5900, 6379, 8080,
                     8443, 8888, 9200, 27017]
 
-    def __init__(self, target, scan_type='full', wordlist='', config=None):
+    def __init__(self, target, scan_type='full', wordlist='', config=None, auth_cookie=''):
         self.target = target
         self.scan_type = scan_type
         self.wordlist = wordlist
         self.config = config or ScannerConfig()
+        self.auth_cookie = auth_cookie
         self.parsed = urlparse(target if '://' in target else f'http://{target}')
         self.hostname = self.parsed.hostname or target
         self.base_url = f"{self.parsed.scheme}://{self.parsed.netloc}" if self.parsed.netloc else f"http://{target}"
         self.timeout = self.config.timeout
 
-    def _request(self, url, method='GET', params=None, headers=None, timeout=None):
+    def _request(self, url, method='GET', params=None, headers=None, timeout=None, data=None):
         default_headers = {
             'User-Agent': self.config.user_agent,
             'Accept': '*/*',
@@ -68,12 +110,19 @@ class VAPTScanner:
         }
         if headers:
             default_headers.update(headers)
+        if self.auth_cookie:
+            default_headers.setdefault('Cookie', self.auth_cookie)
 
         request_url = url
         if params:
-            request_url = f"{request_url}?{urllib.parse.urlencode(params)}"
+            separator = '&' if urllib.parse.urlsplit(request_url).query else '?'
+            request_url = f"{request_url}{separator}{urllib.parse.urlencode(params)}"
 
-        req = urllib.request.Request(request_url, headers=default_headers, method=method)
+        request_data = None
+        if data is not None:
+            request_data = urllib.parse.urlencode(data).encode('utf-8')
+            default_headers.setdefault('Content-Type', 'application/x-www-form-urlencoded')
+        req = urllib.request.Request(request_url, data=request_data, headers=default_headers, method=method)
         timeout_value = timeout or self.timeout
         opener = urllib.request.build_opener()
         if self.config.proxy:
@@ -193,31 +242,101 @@ class VAPTScanner:
             if not resp:
                 continue
 
-            body = resp['body']
-            links = re.findall(r'href=["\']([^"\']+)["\']', body)
-            for link in links:
-                abs_link = urljoin(url, link)
-                if self.hostname in abs_link and abs_link not in visited:
+            parser = _SurfaceParser()
+            parser.feed(resp['body'])
+            parser.close()
+            for link in parser.links:
+                abs_link = urljoin(url, link).split('#', 1)[0]
+                parsed_link = urlparse(abs_link)
+                if (parsed_link.scheme in {'http', 'https'}
+                        and parsed_link.netloc.lower() == self.parsed.netloc.lower()
+                        and abs_link not in visited):
                     found_links.append(abs_link)
                     if depth + 1 <= max_depth:
                         queue.append((abs_link, depth + 1))
 
-            forms = re.findall(r'<form[^>]*>(.*?)</form>', body, re.DOTALL | re.IGNORECASE)
-            for form in forms:
-                action = re.search(r'action=["\']([^"\']*)["\']', form)
-                method = re.search(r'method=["\']([^"\']*)["\']', form)
-                inputs = re.findall(r'<input[^>]*name=["\']([^"\']+)["\']', form)
-                found_forms.append({
-                    'action': action.group(1) if action else url,
-                    'method': method.group(1).upper() if method else 'GET',
-                    'inputs': inputs,
-                })
+            for form in parser.forms:
+                form['action'] = urljoin(url, form['action'] or url)
+                form['source'] = url
+                found_forms.append(form)
 
         return {
-            'links': list(set(found_links))[:max_links],
+            'links': list(dict.fromkeys(found_links))[:max_links],
             'forms': found_forms,
             'pages_crawled': len(visited),
         }
+
+    def _candidate_surfaces(self, crawl_data):
+        surfaces = []
+        seen = set()
+
+        def add_surface(url, method, parameter, query_pairs, fields, field_types):
+            key = (url, method, parameter)
+            if key in seen:
+                return
+            seen.add(key)
+            surfaces.append({
+                'url': url,
+                'method': method,
+                'parameter': parameter,
+                'query': list(query_pairs),
+                'fields': dict(fields),
+                'field_types': dict(field_types),
+            })
+
+        for link in crawl_data.get('links', []):
+            parsed = urllib.parse.urlsplit(link)
+            query_pairs = urllib.parse.parse_qsl(parsed.query, keep_blank_values=True)
+            if not query_pairs:
+                continue
+            url = urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, parsed.path, '', ''))
+            for name, _ in query_pairs:
+                add_surface(url, 'GET', name, query_pairs, {}, {})
+
+        for form in crawl_data.get('forms', []):
+            fields = form.get('fields', [])
+            field_types = {field['name']: field.get('type', 'text') for field in fields}
+            if any(value == 'password' for value in field_types.values()):
+                continue
+            form_url = form.get('action') or form.get('source') or self.base_url
+            parsed = urllib.parse.urlsplit(form_url)
+            query_pairs = urllib.parse.parse_qsl(parsed.query, keep_blank_values=True)
+            url = urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, parsed.path, '', ''))
+            form_fields = {field['name']: field.get('value', '') for field in fields}
+            for name in form.get('inputs', []):
+                if field_types.get(name) in {'hidden', 'submit', 'button', 'reset', 'file'}:
+                    continue
+                add_surface(url, form.get('method', 'GET').upper(), name, query_pairs, form_fields, field_types)
+            for name, _ in query_pairs:
+                add_surface(url, form.get('method', 'GET').upper(), name, query_pairs, form_fields, field_types)
+
+        return surfaces
+
+    @staticmethod
+    def _probe_surface(surface, parameter_value):
+        url = surface['url']
+        method = surface['method']
+        params = list(surface['query'])
+        params = [(name, parameter_value if name == surface['parameter'] else value) for name, value in params]
+        fields = dict(surface['fields'])
+        if method == 'GET':
+            params.extend((name, value) for name, value in fields.items() if name != surface['parameter'])
+            params = [(name, parameter_value if name == surface['parameter'] else value) for name, value in params]
+            query = urllib.parse.urlencode(params)
+            parsed = urllib.parse.urlsplit(url)
+            request_url = urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, parsed.path, query, ''))
+            return request_url, 'GET', None
+
+        fields[surface['parameter']] = parameter_value
+        parsed = urllib.parse.urlsplit(url)
+        query = urllib.parse.urlencode(params)
+        request_url = urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, parsed.path, query, ''))
+        return request_url, 'POST', fields
+
+    def _send_surface_probe(self, surface, value):
+        url, method, data = self._probe_surface(surface, value)
+        response = self._request(url, method=method, data=data)
+        return url, method, data, response
 
     def discover_subdomains(self):
         common_subs = ['www', 'mail', 'ftp', 'admin', 'api', 'dev', 'staging',
@@ -359,94 +478,54 @@ class VAPTScanner:
             os_hints['hints'].append('OS inferred from response headers only; confidence is limited.')
         return os_hints
 
-    def test_xss(self):
+    def test_xss(self, crawl_data=None):
         findings = []
-        crawl_data = self.crawl(max_depth=1, max_links=10)
-        forms = crawl_data.get('forms', [])
-        test_url = f"{self.base_url}/?q="
+        crawl_data = crawl_data or self.crawl(max_depth=2, max_links=30)
+        surfaces = self._candidate_surfaces(crawl_data)[:20]
+        payload = '<vulnpilot-probe>marker</vulnpilot-probe>'
+        tested = 0
 
-        for payload in self.XSS_PAYLOADS[:3]:
-            encoded = urllib.parse.quote(payload)
-            resp = self._request(f"{test_url}{encoded}")
-            if resp and payload.lower() in resp.get('body', '').lower():
-                findings.append(self._make_finding(
-                    title='Reflected XSS candidate',
-                    severity='High',
-                    confidence='Medium',
-                    target=self.target,
-                    endpoint=test_url,
-                    parameter='q',
-                    method='GET',
-                    payload=payload,
-                    request=f'GET {test_url}{encoded}',
-                    response=resp.get('body', '')[:500],
-                    evidence=['Payload reflected in the response body.'],
-                    description='A payload was reflected in the server response in a query parameter without proof of exploitation.',
-                    impact='A malicious payload may execute in a victim browser and could enable session theft or UI redress.',
-                    remediation='Escape user-controlled values in the rendered output and apply a strict CSP policy.',
-                    cwe='CWE-79',
-                    cvss=7.4,
-                    cvss_vector='CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N',
-                    detection_method='reflected_payload',
-                    raw={'url': test_url, 'type': 'reflected_xss'},
-                ))
-                break
+        for surface in surfaces:
+            endpoint, method, data, response = self._send_surface_probe(surface, payload)
+            tested += 1
+            if not response or payload not in response.get('body', ''):
+                continue
+            content_type = next((value for key, value in response.get('headers', {}).items() if key.lower() == 'content-type'), '')
+            if 'html' not in content_type.lower():
+                continue
+            encoded_payload = payload.replace('<', '&lt;').replace('>', '&gt;')
+            if encoded_payload in response.get('body', ''):
+                continue
 
-        for form in forms[:3]:
-            for payload in self.XSS_PAYLOADS[:2]:
-                action_url = urljoin(self.base_url, form['action'])
-                for input_name in form.get('inputs', ['q', 'search']):
-                    params = {input_name: payload}
-                    resp = self._request(action_url, params=params)
-                    if resp and payload.lower() in resp.get('body', '').lower():
-                        findings.append(self._make_finding(
-                            title='Form reflected XSS candidate',
-                            severity='High',
-                            confidence='Medium',
-                            target=self.target,
-                            endpoint=action_url,
-                            parameter=input_name,
-                            method='GET',
-                            payload=payload,
-                            request=f'GET {action_url}?{input_name}={urllib.parse.quote(payload)}',
-                            response=resp.get('body', '')[:500],
-                            evidence=['Payload reflected in an HTML form response.'],
-                            description='The value entered via a form field is echoed back in the response.',
-                            impact='The application may be exploitable via browser-side script execution.',
-                            remediation='Apply contextual output encoding and validate form inputs before rendering.',
-                            cwe='CWE-79',
-                            cvss=7.4,
-                            cvss_vector='CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N',
-                            detection_method='form_reflection',
-                            raw={'url': action_url, 'form': form, 'type': 'reflected_xss'},
-                        ))
-                        break
+            request_value = (data or {}).get(surface['parameter'], payload) if method == 'POST' else payload
+            findings.append(self._make_finding(
+                title='Unescaped reflected markup (XSS candidate)',
+                severity='Medium',
+                confidence='Medium',
+                target=self.target,
+                endpoint=endpoint,
+                parameter=surface['parameter'],
+                method=method,
+                payload=payload,
+                request=f'{method} {endpoint} parameter={surface["parameter"]} value={request_value}',
+                response=response.get('body', '')[:500],
+                evidence=['A harmless custom-element marker was returned unescaped in an HTML response; JavaScript execution was not attempted.'],
+                description='User-controlled markup was reflected into an HTML response without HTML encoding. This is an XSS candidate; verify the exact browser context before classifying it as exploitable.',
+                impact='If the value is interpreted as active markup in a browser context, an attacker may be able to inject content or script.',
+                remediation='Apply context-aware output encoding and validate input before rendering it into HTML.',
+                cwe='CWE-79',
+                cvss=6.1,
+                cvss_vector='CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N',
+                detection_method='unescaped_html_reflection',
+                raw={'type': 'reflected_xss_candidate'},
+            ))
 
-        resp = self._request(self.base_url)
-        if resp:
-            body = resp.get('body', '')
-            if re.search(r'<script[^>]*>.*?(alert|eval|document\.cookie)', body, re.IGNORECASE | re.DOTALL):
-                findings.append(self._make_finding(
-                    title='Inline script indicator',
-                    severity='Medium',
-                    confidence='Low',
-                    target=self.target,
-                    endpoint=self.base_url,
-                    description='Inline script code patterns were identified in the root page.',
-                    impact='Unsafe client-side script execution may be present if the code is user-controlled.',
-                    remediation='Remove inline scripting and enforce CSP and sanitization.',
-                    cwe='CWE-79',
-                    cvss=5.4,
-                    cvss_vector='CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N',
-                    detection_method='script_pattern_scan',
-                    raw={'type': 'stored_xss_indicator'},
-                    evidence=['Suspicious inline script pattern detected in the HTML response.'],
-                ))
+        return {'findings': findings, 'payloads_tested': tested, 'parameters_tested': len(surfaces)}
 
-        return {'findings': findings, 'payloads_tested': len(self.XSS_PAYLOADS)}
-
-    def test_sqli(self):
+    def test_sqli(self, crawl_data=None):
         findings = []
+        crawl_data = crawl_data or self.crawl(max_depth=2, max_links=30)
+        surfaces = self._candidate_surfaces(crawl_data)[:16]
         error_patterns = [
             r'you have an error in your sql syntax',
             r'warning: mysql',
@@ -460,83 +539,98 @@ class VAPTScanner:
             r'invalid query',
         ]
 
-        test_url = f"{self.base_url}/?id="
-        for payload in self.SQLI_PAYLOADS[:4]:
-            encoded = urllib.parse.quote(payload)
-            resp = self._request(f"{test_url}{encoded}")
-            if resp:
-                body = resp.get('body', '').lower()
-                for pattern in error_patterns:
-                    if re.search(pattern, body, re.IGNORECASE):
-                        findings.append(self._make_finding(
-                            title='SQL injection error pattern',
-                            severity='High',
-                            confidence='High',
-                            target=self.target,
-                            endpoint=test_url,
-                            parameter='id',
-                            method='GET',
-                            payload=payload,
-                            request=f'GET {test_url}{encoded}',
-                            response=resp.get('body', '')[:500],
-                            evidence=[f'SQL error pattern matched: {pattern}.'],
-                            description='The response shows a database error pattern consistent with injection handling flaws.',
-                            impact='An attacker may be able to manipulate SQL queries or extract database data.',
-                            remediation='Use parameterized queries and strict server-side validation for all database access.',
-                            cwe='CWE-89',
-                            cvss=9.8,
-                            cvss_vector='CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H',
-                            detection_method='error_pattern_analysis',
-                            raw={'url': test_url, 'error_pattern': pattern},
-                        ))
-                        break
+        tested = 0
+        for surface in surfaces:
+            original = next((value for name, value in surface['query'] if name == surface['parameter']), None)
+            if original is None:
+                original = surface['fields'].get(surface['parameter'], '')
+            baseline_url, method, _, baseline = self._send_surface_probe(surface, original)
+            tested += 1
+            if not baseline:
+                continue
 
-        findings.append(self._make_finding(
-            title='Blind SQLi timing check simulation',
-            severity='Informational',
-            confidence='Low',
-            target=self.target,
-            endpoint=self.base_url,
-            description='A blind timing-based SQL injection payload was simulated and should only be considered a candidate indicator.',
-            impact='A time-delayed database attack may be feasible when the application is vulnerable.',
-            remediation='Validate with a safe, consented test target and confirm differential timing evidence before reporting.',
-            cwe='CWE-89',
-            cvss=0.0,
-            detection_method='simulated_timing_check',
-            evidence=['Timing-based SQLi validation was simulated and not confirmed against a live vulnerable endpoint.'],
-            raw={'type': 'simulated'},
-        ))
+            quote_probe = f"{original}'"
+            error_url, _, _, error_response = self._send_surface_probe(surface, quote_probe)
+            tested += 1
+            baseline_body = baseline.get('body', '').lower()
+            error_body = error_response.get('body', '').lower() if error_response else ''
+            matched_error = next((pattern for pattern in error_patterns
+                                  if re.search(pattern, error_body, re.IGNORECASE)
+                                  and not re.search(pattern, baseline_body, re.IGNORECASE)), None)
+            if matched_error:
+                findings.append(self._make_finding(
+                    title='Database error triggered by input (SQLi candidate)',
+                    severity='High',
+                    confidence='High',
+                    target=self.target,
+                    endpoint=error_url,
+                    parameter=surface['parameter'],
+                    method=method,
+                    payload=quote_probe,
+                    request=f'{method} {error_url} parameter={surface["parameter"]}',
+                    response=error_response.get('body', '')[:500],
+                    evidence=[f'Database error signature appeared only after the quote probe: {matched_error}.'],
+                    description='A database error signature was introduced by a quote in a discovered input. Confirm with application-level review before remediation sign-off.',
+                    impact='Unsafely composed database queries may disclose errors or permit query manipulation.',
+                    remediation='Use parameterized queries and avoid exposing database errors in responses.',
+                    cwe='CWE-89',
+                    cvss=8.1,
+                    cvss_vector='CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N',
+                    detection_method='database_error',
+                    raw={'error_pattern': matched_error},
+                ))
+                continue
 
-        return {'findings': findings, 'payloads_tested': len(self.SQLI_PAYLOADS)}
+            true_value = f"{original}' AND '1'='1"
+            false_value = f"{original}' AND '1'='2"
+            true_url, _, _, true_response = self._send_surface_probe(surface, true_value)
+            false_url, _, _, false_response = self._send_surface_probe(surface, false_value)
+            tested += 2
+            if not true_response or not false_response:
+                continue
+
+            true_body = true_response.get('body', '')
+            false_body = false_response.get('body', '')
+            baseline_body = baseline.get('body', '')
+            true_similarity = SequenceMatcher(None, baseline_body, true_body).ratio()
+            false_similarity = SequenceMatcher(None, baseline_body, false_body).ratio()
+            true_matches_baseline = true_response.get('status') == baseline.get('status') and true_similarity >= 0.9
+            false_differs = (false_response.get('status') != baseline.get('status')
+                             or (false_similarity <= 0.7 and abs(len(false_body) - len(baseline_body)) >= 8))
+            if true_matches_baseline and false_differs:
+                findings.append(self._make_finding(
+                    title='Boolean SQL injection response differential',
+                    severity='High',
+                    confidence='Medium',
+                    target=self.target,
+                    endpoint=true_url,
+                    parameter=surface['parameter'],
+                    method=method,
+                    payload=f"{true_value} / {false_value}",
+                    request=f'{method} {true_url} and {false_url} with paired Boolean conditions',
+                    response=f'True-condition similarity: {true_similarity:.2f}; false-condition similarity: {false_similarity:.2f}.',
+                    evidence=['The true condition matched the baseline response while the false condition produced a materially different response.'],
+                    description='Paired non-destructive Boolean conditions produced a repeatable-looking response differential on a discovered input. Dynamic content can affect this heuristic; independently verify before confirming.',
+                    impact='A vulnerable query may expose or alter data based on attacker-controlled conditions.',
+                    remediation='Use parameterized queries and validate the input according to its expected type.',
+                    cwe='CWE-89',
+                    cvss=8.1,
+                    cvss_vector='CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N',
+                    detection_method='boolean_response_diff',
+                    raw={'true_similarity': true_similarity, 'false_similarity': false_similarity},
+                ))
+
+        return {'findings': findings, 'payloads_tested': tested, 'parameters_tested': len(surfaces)}
 
     def test_idor(self):
-        findings = []
-        idor_patterns = ['/user/1', '/user/2', '/profile/1', '/account/1', '/api/user/1', '/api/order/1', '/document/1', '/?id=1', '/?user_id=1', '/?account=1']
-
-        for pattern in idor_patterns[:5]:
-            url = f"{self.base_url}{pattern}"
-            resp = self._request(url)
-            if resp and resp['status'] == 200:
-                body = resp.get('body', '')
-                if any(kw in body.lower() for kw in ['email', 'username', 'password', 'account', 'user']):
-                    findings.append(self._make_finding(
-                        title='Potential IDOR / BOLA candidate',
-                        severity='Medium',
-                        confidence='Low',
-                        target=self.target,
-                        endpoint=url,
-                        description='The endpoint returns user-like data without evidence of a proper authorization boundary check.',
-                        impact='Attackers may access records or actions intended for another user if access control is weak.',
-                        remediation='Enforce object-level authorization checks and validate access against the active user context.',
-                        cwe='CWE-639',
-                        cvss=7.5,
-                        cvss_vector='CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N',
-                        detection_method='authorization_pattern_scan',
-                        evidence=['Sensitive user-like data was returned in a direct object lookup path.'],
-                        raw={'url': url, 'pattern': pattern},
-                    ))
-
-        return {'findings': findings, 'patterns_tested': len(idor_patterns)}
+        return {
+            'findings': [],
+            'patterns_tested': 0,
+            'status': 'Not assessed',
+            'limitations': [
+                'Reliable IDOR/BOLA validation requires two authorized user identities and a known object owned by each identity.'
+            ],
+        }
 
     def check_headers(self):
         findings = []
@@ -737,88 +831,48 @@ class VAPTScanner:
 
         return {'found': found, 'checked': len(checked)}
 
-    def check_owasp(self):
+    def check_owasp(self, all_results=None):
+        all_results = all_results or {}
+        categories = [
+            ('A01 - Broken Access Control', [], 'Requires two authorized identities and known object ownership.'),
+            ('A02 - Cryptographic Failures', ['ssl'], 'TLS observations only; application-level cryptographic design is not tested.'),
+            ('A03 - Injection', ['xss', 'sqli'], 'Bounded reflected-markup and SQL error/Boolean differential probes.'),
+            ('A04 - Insecure Design', [], 'Requires business-logic and threat-model review.'),
+            ('A05 - Security Misconfiguration', ['headers'], 'Response security-header checks only.'),
+            ('A06 - Vulnerable and Outdated Components', [], 'Versioned component identification and advisory matching are not implemented.'),
+            ('A07 - Identification and Authentication Failures', [], 'Authentication policy and account lifecycle checks are not implemented.'),
+            ('A08 - Software and Data Integrity Failures', [], 'Build, update, and integrity controls are not tested.'),
+            ('A09 - Security Logging and Monitoring Failures', [], 'Logging and alert-response behavior require application-side validation.'),
+            ('A10 - Server-Side Request Forgery', [], 'SSRF probes are intentionally not run by this scanner.'),
+        ]
         findings = []
-        findings.append({
-            'category': 'A01 - Broken Access Control',
-            'checks': ['IDOR testing', 'Directory traversal', 'Admin panel exposure'],
-            'status': 'Checked',
-            'severity': 'High',
-            'cvss': 7.5,
-        })
+        severity_order = {'Critical': 0, 'High': 1, 'Medium': 2, 'Low': 3, 'Informational': 4}
 
-        has_https = self.base_url.startswith('https')
-        findings.append({
-            'category': 'A02 - Cryptographic Failures',
-            'checks': ['HTTPS check', 'Cookie security flags'],
-            'status': 'HTTPS not enforced' if not has_https else 'HTTPS enabled',
-            'severity': 'High' if not has_https else 'Low',
-            'cvss': 7.5 if not has_https else 2.0,
-        })
-
-        findings.append({
-            'category': 'A03 - Injection',
-            'checks': ['SQL Injection', 'XSS', 'Command Injection'],
-            'status': 'Checked via payload testing',
-            'severity': 'Critical',
-            'cvss': 9.8,
-        })
-
-        findings.append({
-            'category': 'A05 - Security Misconfiguration',
-            'checks': ['Default credentials', 'Debug mode', 'Error exposure', 'Directory listing'],
-            'status': 'Checked',
-            'severity': 'Medium',
-            'cvss': 5.3,
-        })
-
-        findings.append({
-            'category': 'A06 - Vulnerable and Outdated Components',
-            'checks': ['Technology version detection'],
-            'status': 'Component versions analyzed',
-            'severity': 'Medium',
-            'cvss': 5.5,
-        })
-
-        login_paths = ['/login', '/admin', '/wp-login.php', '/signin']
-        for path in login_paths:
-            resp = self._request(f"{self.base_url}{path}")
-            if resp and resp['status'] == 200:
-                body = resp.get('body', '').lower()
-                has_lockout = 'captcha' in body or 'too many' in body or 'locked' in body
+        for category, result_keys, limitation in categories:
+            if not result_keys:
                 findings.append({
-                    'category': 'A07 - Identification and Authentication Failures',
-                    'checks': ['Brute force protection', 'CAPTCHA', 'Account lockout'],
-                    'status': 'No lockout mechanism detected' if not has_lockout else 'Lockout detected',
-                    'severity': 'High' if not has_lockout else 'Low',
-                    'cvss': 7.5 if not has_lockout else 2.0,
-                    'url': path,
+                    'category': category,
+                    'checks': [],
+                    'status': 'Not assessed',
+                    'severity': 'Informational',
+                    'cvss': 0.0,
+                    'note': limitation,
                 })
-                break
+                continue
 
-        findings.append({
-            'category': 'A08 - Software and Data Integrity Failures',
-            'checks': ['Subresource Integrity (SRI)', 'Update mechanism'],
-            'status': 'SRI check performed',
-            'severity': 'Medium',
-            'cvss': 4.8,
-        })
-
-        findings.append({
-            'category': 'A09 - Security Logging and Monitoring Failures',
-            'checks': ['Error page verbosity', 'Log exposure'],
-            'status': 'Manual review recommended',
-            'severity': 'Medium',
-            'cvss': 4.3,
-        })
-
-        findings.append({
-            'category': 'A10 - Server-Side Request Forgery (SSRF)',
-            'checks': ['URL parameter injection', 'Webhook endpoints'],
-            'status': 'Basic SSRF patterns checked',
-            'severity': 'High',
-            'cvss': 7.2,
-        })
+            observed = [finding for key in result_keys
+                        for finding in all_results.get(key, {}).get('findings', [])
+                        if finding.get('severity') != 'Informational']
+            observed.sort(key=lambda item: severity_order.get(item.get('severity', 'Informational'), 4))
+            findings.append({
+                'category': category,
+                'checks': result_keys,
+                'status': 'Potential findings identified' if observed else 'No finding identified by configured checks',
+                'severity': observed[0].get('severity', 'Informational') if observed else 'Informational',
+                'cvss': observed[0].get('cvss', {}).get('score', 0.0) if observed else 0.0,
+                'finding_count': len(observed),
+                'note': limitation,
+            })
 
         return {'findings': findings}
 
