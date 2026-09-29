@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}New Scan — VAPT Scanner{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/scan.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Launch VAPT Scan</h1>
+        <p class="page-subtitle">Configure and initiate an automated security assessment</p>
+    </div>
+</div>
+
+<div class="scan-layout">
+    <!-- Scan Configuration Panel -->
+    <div class="panel" id="configPanel">
+        <div class="panel-header">
+            <h2 class="panel-title">Scan Configuration</h2>
+        </div>
+
+        <div class="scan-form" id="scanForm">
+            <div class="form-group">
+                <label class="form-label" for="target">Target URL / IP Address</label>
+                <input class="form-input" type="text" id="target" name="target"
+                       placeholder="e.g. http://testphp.vulnweb.com or 192.168.1.1" required>
+                <span class="field-hint">Enter the target you have authorization to test</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="scan_type">Scan Type</label>
+                <select class="form-input" id="scan_type" name="scan_type">
+                    <option value="full">Full VAPT (All Phases)</option>
+                    <option value="recon">Reconnaissance Only</option>
+                    <option value="vuln">Vulnerability Scan Only</option>
+                    <option value="quick">Quick Scan (Lightweight)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="wordlist">Custom Wordlist (Optional)</label>
+                <textarea class="form-input form-textarea" id="wordlist" name="wordlist"
+                          placeholder="Enter custom directory paths (one per line):&#10;/admin&#10;/backup&#10;/config"></textarea>
+                <span class="field-hint">Leave empty to use built-in wordlist</span>
+            </div>
+
+            <div class="scan-phases">
+                <label class="form-label">Scan Phases Included</label>
+                <div class="phases-grid">
+                    <div class="phase-badge phase-badge--recon">🔍 Reconnaissance</div>
+                    <div class="phase-badge phase-badge--enum">📡 Enumeration</div>
+                    <div class="phase-badge phase-badge--vuln">🛡️ Vulnerability Scan</div>
+                    <div class="phase-badge phase-badge--analysis">📊 Analysis</div>
+                </div>
+            </div>
+
+            <div class="consent-box">
+                <input type="checkbox" id="consent" name="consent" required>
+                <label for="consent">
+                    I confirm I have <strong>legal authorization</strong> to scan this target. 
+                    Unauthorized scanning is illegal and unethical.
+                </label>
+            </div>
+
+            <button class="btn-primary btn-full btn-launch" id="launchBtn" type="button">
+                ⚡ Launch VAPT Scan
+            </button>
+        </div>
+    </div>
+
+    <!-- Live Progress Panel -->
+    <div class="panel" id="progressPanel" style="display:none;">
+        <div class="panel-header">
+            <h2 class="panel-title">Live Scan Progress</h2>
+            <span class="scan-status-badge" id="statusBadge">Initializing...</span>
+        </div>
+
+        <div class="progress-wrapper">
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+            </div>
+            <span class="progress-percent" id="progressPercent">0%</span>
+        </div>
+
+        <div class="phase-indicators">
+            <div class="phase-indicator" id="phase-recon">
+                <span class="phase-dot"></span>
+                <span>Reconnaissance</span>
+            </div>
+            <div class="phase-indicator" id="phase-enum">
+                <span class="phase-dot"></span>
+                <span>Enumeration</span>
+            </div>
+            <div class="phase-indicator" id="phase-vuln">
+                <span class="phase-dot"></span>
+                <span>Vulnerability Scan</span>
+            </div>
+            <div class="phase-indicator" id="phase-analysis">
+                <span class="phase-dot"></span>
+                <span>Analysis</span>
+            </div>
+            <div class="phase-indicator" id="phase-report">
+                <span class="phase-dot"></span>
+                <span>Report Generation</span>
+            </div>
+        </div>
+
+        <div class="log-terminal" id="logTerminal">
+            <div class="terminal-header">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+                <span class="terminal-title">Scan Log</span>
+            </div>
+            <div class="terminal-body" id="logOutput">
+                <span class="log-prompt">$ </span>Waiting to start...
+            </div>
+        </div>
+
+        <div id="scanCompleteActions" style="display:none;" class="scan-actions">
+            <p class="success-msg">✅ Scan completed successfully!</p>
+            <div class="action-buttons">
+                <button class="btn-primary" id="viewResultsBtn">View Full Results</button>
+                <a href="{{ url_for('scan') }}" class="btn-secondary">Run Another Scan</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/scan.js') }}"></script>
+{% endblock %}

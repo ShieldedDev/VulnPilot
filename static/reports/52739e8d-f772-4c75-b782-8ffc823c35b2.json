@@ -1,0 +1,954 @@
+{
+  "report_metadata": {
+    "title": "VAPT Assessment Report",
+    "scan_id": "52739e8d-f772-4c75-b782-8ffc823c35b2",
+    "target": "tesla.com",
+    "generated_at": "2026-09-29 14:56:06",
+    "tool": "Advanced VAPT Scanner v1.0",
+    "classification": "CONFIDENTIAL"
+  },
+  "executive_summary": {
+    "overview": "A comprehensive vulnerability assessment and penetration test was conducted against the target 'tesla.com'. The assessment identified 7 security findings, comprising 0 Critical, 0 High, 3 Medium, and 4 Low severity issues. The overall risk rating for the target is assessed as <b>Medium</b>. Immediate remediation of Critical and High severity findings is strongly recommended.",
+    "risk": "Medium",
+    "total_findings": 7,
+    "severity_counts": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 3,
+      "Low": 4,
+      "Info": 0
+    }
+  },
+  "scope": {
+    "target": "tesla.com",
+    "scan_type": "Full Automated VAPT",
+    "phases": [
+      "Reconnaissance",
+      "Enumeration",
+      "Vulnerability Scanning",
+      "Analysis"
+    ]
+  },
+  "methodology": {
+    "approach": "Black-Box Testing",
+    "standards": [
+      "OWASP Top 10",
+      "PTES",
+      "NIST SP 800-115"
+    ],
+    "phases": {
+      "recon": "Web crawling, tech detection, subdomain discovery, dir fuzzing",
+      "enum": "Port scanning, service enumeration, OS fingerprinting, banner grabbing",
+      "vuln": "XSS, SQLi, IDOR, header analysis, SSL/TLS check, OWASP checks",
+      "analysis": "CVSS scoring, severity classification, PoC generation, remediation"
+    }
+  },
+  "findings": {
+    "reconnaissance": {
+      "technologies": {
+        "server": "AkamaiGHost",
+        "cms": "",
+        "frameworks": [],
+        "languages": [],
+        "headers": {
+          "Server": "AkamaiGHost",
+          "Mime-Version": "1.0",
+          "Content-Type": "text/html",
+          "Expires": "Tue, 29 Sep 2026 09:24:53 GMT",
+          "X-Reference-Error": "18.2667d117.1790673893.8cde6a5",
+          "X-Akamai-Transformed": "0 - 0 -",
+          "Date": "Tue, 29 Sep 2026 09:24:53 GMT",
+          "Connection": "close",
+          "X-AK-Cache": "Error from child",
+          "Permissions-Policy": "interest-cohort=()",
+          "Set-Cookie": "_abck=E765C3ABEE3ACBD8772AE0676583DF66~-1~YAAQJmfRFwSHNeegAQAAcjl77BCsvoc565FOqzrNtx6yg3/5QfJ0DPsgegm/LIlDfFHdYEon1RmHUqFxEMBSPNPZcj/UXKathmqR+tDbWBlDwaQM7feSR/3aFOKR0Oo6tfTbPcD1hoFo1Y4Zuh5wUqXK7ufmdtZkajl12WsXfIJ2cgilu4cv8Re6dPFkUNmyUczLiJjor9MoVIgd/1LcJV7yOfrp4L4RjdLmEq8rE9DDX57v8ZbuZl1PAcJJySr4AHxEeEGaxzCMRnDSer+g7oY5d7+DoYVdKj/g4KVjCm4O1UlCMVmsyFpQjUt6XFrRZJMXJ/Kyg9odZnCPbEBp/DLHv78cMqk6/unmcNOlJ7Xk3Iz/ucPIygNmtmdDsB125lZy+Y0ITV63R+pG~-1~-1~-1~-1~-1; Domain=.tesla.com; Path=/; Expires=Wed, 29 Sep 2027 09:24:53 GMT; Max-Age=31536000; SameSite=None; Secure"
+        },
+        "powered_by": "",
+        "interesting_headers": {
+          "x-frame-options": "MISSING",
+          "content-security-policy": "MISSING",
+          "x-xss-protection": "MISSING",
+          "strict-transport-security": "MISSING",
+          "x-content-type-options": "MISSING",
+          "referrer-policy": "MISSING"
+        }
+      },
+      "crawl": {
+        "links": [],
+        "forms": [],
+        "pages_crawled": 1
+      },
+      "subdomains": {
+        "found": [
+          {
+            "subdomain": "www.tesla.com",
+            "ip": "23.38.49.204",
+            "status": "resolved"
+          },
+          {
+            "subdomain": "shop.tesla.com",
+            "ip": "23.38.49.204",
+            "status": "resolved"
+          },
+          {
+            "subdomain": "auth.tesla.com",
+            "ip": "23.38.49.204",
+            "status": "resolved"
+          },
+          {
+            "subdomain": "static.tesla.com",
+            "ip": "23.38.49.204",
+            "status": "resolved"
+          }
+        ],
+        "checked": 20,
+        "base_domain": "tesla.com"
+      },
+      "directories": {
+        "found": [
+          {
+            "path": "admin",
+            "url": "http://tesla.com/admin",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "login",
+            "url": "http://tesla.com/login",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "wp-admin",
+            "url": "http://tesla.com/wp-admin",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "phpmyadmin",
+            "url": "http://tesla.com/phpmyadmin",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "api",
+            "url": "http://tesla.com/api",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "v1",
+            "url": "http://tesla.com/v1",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "v2",
+            "url": "http://tesla.com/v2",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "backup",
+            "url": "http://tesla.com/backup",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "config",
+            "url": "http://tesla.com/config",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "test",
+            "url": "http://tesla.com/test",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "dev",
+            "url": "http://tesla.com/dev",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "staging",
+            "url": "http://tesla.com/staging",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "uploads",
+            "url": "http://tesla.com/uploads",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "files",
+            "url": "http://tesla.com/files",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "static",
+            "url": "http://tesla.com/static",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "assets",
+            "url": "http://tesla.com/assets",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "dashboard",
+            "url": "http://tesla.com/dashboard",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "panel",
+            "url": "http://tesla.com/panel",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "manage",
+            "url": "http://tesla.com/manage",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "console",
+            "url": "http://tesla.com/console",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": ".git",
+            "url": "http://tesla.com/.git",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": ".env",
+            "url": "http://tesla.com/.env",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "robots.txt",
+            "url": "http://tesla.com/robots.txt",
+            "status": 200,
+            "interesting": true
+          },
+          {
+            "path": "sitemap.xml",
+            "url": "http://tesla.com/sitemap.xml",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "server-status",
+            "url": "http://tesla.com/server-status",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "phpinfo.php",
+            "url": "http://tesla.com/phpinfo.php",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "info.php",
+            "url": "http://tesla.com/info.php",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "readme.txt",
+            "url": "http://tesla.com/readme.txt",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "CHANGELOG.txt",
+            "url": "http://tesla.com/CHANGELOG.txt",
+            "status": 403,
+            "interesting": true
+          }
+        ],
+        "total_checked": 29,
+        "interesting": [
+          {
+            "path": "admin",
+            "url": "http://tesla.com/admin",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "login",
+            "url": "http://tesla.com/login",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "wp-admin",
+            "url": "http://tesla.com/wp-admin",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "phpmyadmin",
+            "url": "http://tesla.com/phpmyadmin",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "api",
+            "url": "http://tesla.com/api",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "v1",
+            "url": "http://tesla.com/v1",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "v2",
+            "url": "http://tesla.com/v2",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "backup",
+            "url": "http://tesla.com/backup",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "config",
+            "url": "http://tesla.com/config",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "test",
+            "url": "http://tesla.com/test",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "dev",
+            "url": "http://tesla.com/dev",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "staging",
+            "url": "http://tesla.com/staging",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "uploads",
+            "url": "http://tesla.com/uploads",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "files",
+            "url": "http://tesla.com/files",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "static",
+            "url": "http://tesla.com/static",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "assets",
+            "url": "http://tesla.com/assets",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "dashboard",
+            "url": "http://tesla.com/dashboard",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "panel",
+            "url": "http://tesla.com/panel",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "manage",
+            "url": "http://tesla.com/manage",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "console",
+            "url": "http://tesla.com/console",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": ".git",
+            "url": "http://tesla.com/.git",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": ".env",
+            "url": "http://tesla.com/.env",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "robots.txt",
+            "url": "http://tesla.com/robots.txt",
+            "status": 200,
+            "interesting": true
+          },
+          {
+            "path": "sitemap.xml",
+            "url": "http://tesla.com/sitemap.xml",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "server-status",
+            "url": "http://tesla.com/server-status",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "phpinfo.php",
+            "url": "http://tesla.com/phpinfo.php",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "info.php",
+            "url": "http://tesla.com/info.php",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "readme.txt",
+            "url": "http://tesla.com/readme.txt",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "CHANGELOG.txt",
+            "url": "http://tesla.com/CHANGELOG.txt",
+            "status": 403,
+            "interesting": true
+          }
+        ]
+      }
+    },
+    "enumeration": {
+      "ports": {
+        "host": "tesla.com",
+        "ip": "2.18.53.207",
+        "open": [],
+        "closed": [
+          21,
+          22,
+          23,
+          25,
+          53,
+          80,
+          110,
+          135,
+          139,
+          143,
+          443,
+          445,
+          993,
+          995,
+          1433,
+          1521,
+          3306,
+          3389,
+          5432,
+          5900,
+          6379,
+          8080,
+          8443,
+          8888,
+          9200,
+          27017
+        ],
+        "total_scanned": 26
+      },
+      "services": {},
+      "os_detection": {
+        "os": "Unknown",
+        "confidence": "Low",
+        "hints": [
+          "TTL analysis: Linux/Unix (TTL~64)"
+        ]
+      }
+    },
+    "vulnerabilities": {
+      "xss": {
+        "findings": [],
+        "payloads_tested": 6
+      },
+      "sqli": {
+        "findings": [
+          {
+            "type": "SQL Injection Check (Blind - Simulated)",
+            "url": "http://tesla.com",
+            "payload": "' AND SLEEP(2)--",
+            "evidence": "Timing-based blind injection payload tested (simulated)",
+            "severity": "Info",
+            "cvss": 0.0
+          }
+        ],
+        "payloads_tested": 7
+      },
+      "idor": {
+        "findings": [],
+        "patterns_tested": 10
+      },
+      "headers": {
+        "findings": [
+          {
+            "type": "Missing Security Header",
+            "header": "x-frame-options",
+            "description": "Missing X-Frame-Options - Clickjacking vulnerability",
+            "severity": "Medium",
+            "cvss": 4.3,
+            "remediation": "Add: X-Frame-Options: DENY or SAMEORIGIN"
+          },
+          {
+            "type": "Missing Security Header",
+            "header": "content-security-policy",
+            "description": "Missing Content-Security-Policy header",
+            "severity": "Medium",
+            "cvss": 5.0,
+            "remediation": "Implement a strict CSP policy"
+          },
+          {
+            "type": "Missing Security Header",
+            "header": "x-content-type-options",
+            "description": "Missing X-Content-Type-Options - MIME sniffing vulnerability",
+            "severity": "Low",
+            "cvss": 3.1,
+            "remediation": "Add: X-Content-Type-Options: nosniff"
+          },
+          {
+            "type": "Missing Security Header",
+            "header": "strict-transport-security",
+            "description": "Missing HSTS header - Downgrade attack possible",
+            "severity": "Medium",
+            "cvss": 4.8,
+            "remediation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains"
+          },
+          {
+            "type": "Missing Security Header",
+            "header": "x-xss-protection",
+            "description": "Missing X-XSS-Protection header",
+            "severity": "Low",
+            "cvss": 3.1,
+            "remediation": "Add: X-XSS-Protection: 1; mode=block"
+          },
+          {
+            "type": "Missing Security Header",
+            "header": "referrer-policy",
+            "description": "Missing Referrer-Policy header - Information leakage",
+            "severity": "Low",
+            "cvss": 2.6,
+            "remediation": "Add: Referrer-Policy: strict-origin-when-cross-origin"
+          },
+          {
+            "type": "Information Disclosure",
+            "header": "Server",
+            "description": "Server header reveals: AkamaiGHost",
+            "severity": "Low",
+            "cvss": 2.0,
+            "remediation": "Remove or obfuscate the Server header"
+          }
+        ],
+        "headers_checked": 7
+      },
+      "ssl_tls": {
+        "info": {
+          "enabled": true,
+          "version": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "cert_valid": true,
+          "cert_issuer": "Let's Encrypt",
+          "cert_expiry": "Nov 14 20:25:32 2026 GMT",
+          "issues": []
+        },
+        "findings": []
+      },
+      "api_endpoints": {
+        "found": [
+          {
+            "url": "http://tesla.com/api/",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/api/v1/",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/api/v2/",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/rest/",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/graphql",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/swagger",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/api-docs",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/openapi.json",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/api/users",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/api/auth",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/api/login",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/api/admin",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/api/config",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/api/data",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          },
+          {
+            "url": "http://tesla.com/api/export",
+            "status": 403,
+            "is_json": false,
+            "note": "Status: 403"
+          }
+        ],
+        "checked": 15
+      },
+      "owasp": {
+        "findings": [
+          {
+            "category": "A01 - Broken Access Control",
+            "checks": [
+              "IDOR testing",
+              "Directory traversal",
+              "Admin panel exposure"
+            ],
+            "status": "Checked",
+            "severity": "High",
+            "cvss": 7.5
+          },
+          {
+            "category": "A02 - Cryptographic Failures",
+            "checks": [
+              "HTTPS check",
+              "Cookie security flags"
+            ],
+            "status": "HTTPS not enforced",
+            "severity": "High",
+            "cvss": 7.5
+          },
+          {
+            "category": "A03 - Injection",
+            "checks": [
+              "SQL Injection",
+              "XSS",
+              "Command Injection"
+            ],
+            "status": "Checked via payload testing",
+            "severity": "Critical",
+            "cvss": 9.8
+          },
+          {
+            "category": "A05 - Security Misconfiguration",
+            "checks": [
+              "Default credentials",
+              "Debug mode",
+              "Error exposure",
+              "Directory listing"
+            ],
+            "status": "Checked",
+            "severity": "Medium",
+            "cvss": 5.3
+          },
+          {
+            "category": "A06 - Vulnerable and Outdated Components",
+            "checks": [
+              "Technology version detection"
+            ],
+            "status": "Component versions analyzed",
+            "severity": "Medium",
+            "cvss": 5.5
+          },
+          {
+            "category": "A08 - Software and Data Integrity Failures",
+            "checks": [
+              "Subresource Integrity (SRI)",
+              "Update mechanism"
+            ],
+            "status": "SRI check performed",
+            "severity": "Medium",
+            "cvss": 4.8
+          },
+          {
+            "category": "A09 - Security Logging and Monitoring Failures",
+            "checks": [
+              "Error page verbosity",
+              "Log exposure"
+            ],
+            "status": "Manual review recommended",
+            "severity": "Medium",
+            "cvss": 4.3
+          },
+          {
+            "category": "A10 - Server-Side Request Forgery (SSRF)",
+            "checks": [
+              "URL parameter injection",
+              "Webhook endpoints"
+            ],
+            "status": "Basic SSRF patterns checked",
+            "severity": "High",
+            "cvss": 7.2
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "vulnerabilities": [
+        {
+          "type": "Missing Security Header",
+          "header": "x-frame-options",
+          "description": "Missing X-Frame-Options - Clickjacking vulnerability",
+          "severity": "Medium",
+          "cvss": 4.3,
+          "remediation": "Add: X-Frame-Options: DENY or SAMEORIGIN"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "content-security-policy",
+          "description": "Missing Content-Security-Policy header",
+          "severity": "Medium",
+          "cvss": 5.0,
+          "remediation": "Implement a strict CSP policy"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "strict-transport-security",
+          "description": "Missing HSTS header - Downgrade attack possible",
+          "severity": "Medium",
+          "cvss": 4.8,
+          "remediation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "x-content-type-options",
+          "description": "Missing X-Content-Type-Options - MIME sniffing vulnerability",
+          "severity": "Low",
+          "cvss": 3.1,
+          "remediation": "Add: X-Content-Type-Options: nosniff"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "x-xss-protection",
+          "description": "Missing X-XSS-Protection header",
+          "severity": "Low",
+          "cvss": 3.1,
+          "remediation": "Add: X-XSS-Protection: 1; mode=block"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "referrer-policy",
+          "description": "Missing Referrer-Policy header - Information leakage",
+          "severity": "Low",
+          "cvss": 2.6,
+          "remediation": "Add: Referrer-Policy: strict-origin-when-cross-origin"
+        },
+        {
+          "type": "Information Disclosure",
+          "header": "Server",
+          "description": "Server header reveals: AkamaiGHost",
+          "severity": "Low",
+          "cvss": 2.0,
+          "remediation": "Remove or obfuscate the Server header"
+        }
+      ],
+      "severity_counts": {
+        "Critical": 0,
+        "High": 0,
+        "Medium": 3,
+        "Low": 4,
+        "Info": 0
+      },
+      "risk_score": 16,
+      "overall_risk": "Medium",
+      "poc_examples": [],
+      "remediation_priority": [
+        {
+          "type": "Missing Security Header",
+          "header": "x-frame-options",
+          "description": "Missing X-Frame-Options - Clickjacking vulnerability",
+          "severity": "Medium",
+          "cvss": 4.3,
+          "remediation": "Add: X-Frame-Options: DENY or SAMEORIGIN"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "content-security-policy",
+          "description": "Missing Content-Security-Policy header",
+          "severity": "Medium",
+          "cvss": 5.0,
+          "remediation": "Implement a strict CSP policy"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "strict-transport-security",
+          "description": "Missing HSTS header - Downgrade attack possible",
+          "severity": "Medium",
+          "cvss": 4.8,
+          "remediation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "x-content-type-options",
+          "description": "Missing X-Content-Type-Options - MIME sniffing vulnerability",
+          "severity": "Low",
+          "cvss": 3.1,
+          "remediation": "Add: X-Content-Type-Options: nosniff"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "x-xss-protection",
+          "description": "Missing X-XSS-Protection header",
+          "severity": "Low",
+          "cvss": 3.1,
+          "remediation": "Add: X-XSS-Protection: 1; mode=block"
+        }
+      ]
+    }
+  },
+  "risk_summary": {
+    "overall": "Medium",
+    "score": 16,
+    "counts": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 3,
+      "Low": 4,
+      "Info": 0
+    }
+  },
+  "remediation_recommendations": [
+    {
+      "finding": "Missing Security Header",
+      "priority": "Medium",
+      "recommendation": "Add: X-Frame-Options: DENY or SAMEORIGIN",
+      "cvss": 4.3
+    },
+    {
+      "finding": "Missing Security Header",
+      "priority": "Medium",
+      "recommendation": "Implement a strict CSP policy",
+      "cvss": 5.0
+    },
+    {
+      "finding": "Missing Security Header",
+      "priority": "Medium",
+      "recommendation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains",
+      "cvss": 4.8
+    },
+    {
+      "finding": "Missing Security Header",
+      "priority": "Low",
+      "recommendation": "Add: X-Content-Type-Options: nosniff",
+      "cvss": 3.1
+    },
+    {
+      "finding": "Missing Security Header",
+      "priority": "Low",
+      "recommendation": "Add: X-XSS-Protection: 1; mode=block",
+      "cvss": 3.1
+    },
+    {
+      "finding": "Missing Security Header",
+      "priority": "Low",
+      "recommendation": "Add: Referrer-Policy: strict-origin-when-cross-origin",
+      "cvss": 2.6
+    },
+    {
+      "finding": "Information Disclosure",
+      "priority": "Low",
+      "recommendation": "Remove or obfuscate the Server header",
+      "cvss": 2.0
+    }
+  ],
+  "conclusion": "The automated VAPT assessment of 'tesla.com' has been completed. The target demonstrates a Medium overall security posture. Key areas requiring immediate attention include: 0 critical vulnerabilities and 0 high-severity issues. It is recommended that the development and security teams prioritize remediation of critical and high-severity findings before re-assessment. A follow-up pentest is advised after remediation to validate that all identified vulnerabilities have been resolved. All testing was performed in a controlled, authorized manner following ethical security research practices."
+}

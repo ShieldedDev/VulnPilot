@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Scan History — VAPT Scanner{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Scan History</h1>
+        <p class="page-subtitle">All your previous VAPT assessments</p>
+    </div>
+    <a href="{{ url_for('scan') }}" class="btn-primary">+ New Scan</a>
+</div>
+
+{% if scans %}
+<div class="panel">
+    <table class="data-table history-table">
+        <thead>
+            <tr>
+                <th>Target</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Critical</th>
+                <th>High</th>
+                <th>Medium</th>
+                <th>Low</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for scan in scans %}
+            <tr>
+                <td class="target-cell">{{ scan.target }}</td>
+                <td><span class="meta-tag">{{ scan.scan_type }}</span></td>
+                <td><span class="badge badge--{{ scan.status }}">{{ scan.status }}</span></td>
+                <td><span class="count-cell count-critical">{{ scan.critical_count or 0 }}</span></td>
+                <td><span class="count-cell count-high">{{ scan.high_count or 0 }}</span></td>
+                <td><span class="count-cell count-medium">{{ scan.medium_count or 0 }}</span></td>
+                <td><span class="count-cell count-low">{{ scan.low_count or 0 }}</span></td>
+                <td class="date-cell">{{ scan.created_at }}</td>
+                <td>
+                    <div class="action-cell">
+                        {% if scan.status == 'completed' %}
+                        <a href="{{ url_for('scan_results', scan_id=scan.id) }}" class="btn-sm">View</a>
+                        <a href="{{ url_for('download_pdf', scan_id=scan.id) }}" class="btn-sm btn-sm--danger">PDF</a>
+                        <a href="{{ url_for('download_json', scan_id=scan.id) }}" class="btn-sm btn-sm--muted">JSON</a>
+                        {% endif %}
+                        <button class="btn-sm btn-sm--delete" data-scan-id="{{ scan.id }}">Delete</button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="panel">
+    <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <p>No scan history found.</p>
+        <a href="{{ url_for('scan') }}" class="btn-primary">Run Your First Scan</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/history.js') }}"></script>
+{% endblock %}

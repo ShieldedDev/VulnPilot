@@ -1,0 +1,710 @@
+{
+  "report_metadata": {
+    "title": "VAPT Assessment Report",
+    "scan_id": "824d42f5-747c-4c3c-9d76-364f3b92e2fb",
+    "target": "http://192.168.1.37/dvwa/",
+    "generated_at": "2026-02-25 17:25:51",
+    "tool": "Advanced VAPT Scanner v1.0",
+    "classification": "CONFIDENTIAL"
+  },
+  "executive_summary": {
+    "overview": "A comprehensive vulnerability assessment and penetration test was conducted against the target 'http://192.168.1.37/dvwa/'. The assessment identified 10 security findings, comprising 0 Critical, 1 High, 3 Medium, and 6 Low severity issues. The overall risk rating for the target is assessed as <b>Medium</b>. Immediate remediation of Critical and High severity findings is strongly recommended.",
+    "risk": "Medium",
+    "total_findings": 10,
+    "severity_counts": {
+      "Critical": 0,
+      "High": 1,
+      "Medium": 3,
+      "Low": 6,
+      "Info": 0
+    }
+  },
+  "scope": {
+    "target": "http://192.168.1.37/dvwa/",
+    "scan_type": "Full Automated VAPT",
+    "phases": [
+      "Reconnaissance",
+      "Enumeration",
+      "Vulnerability Scanning",
+      "Analysis"
+    ]
+  },
+  "methodology": {
+    "approach": "Black-Box Testing",
+    "standards": [
+      "OWASP Top 10",
+      "PTES",
+      "NIST SP 800-115"
+    ],
+    "phases": {
+      "recon": "Web crawling, tech detection, subdomain discovery, dir fuzzing",
+      "enum": "Port scanning, service enumeration, OS fingerprinting, banner grabbing",
+      "vuln": "XSS, SQLi, IDOR, header analysis, SSL/TLS check, OWASP checks",
+      "analysis": "CVSS scoring, severity classification, PoC generation, remediation"
+    }
+  },
+  "findings": {
+    "reconnaissance": {
+      "technologies": {
+        "server": "Apache/2.2.8 (Ubuntu) DAV/2",
+        "cms": "",
+        "frameworks": [],
+        "languages": [
+          "PHP"
+        ],
+        "headers": {
+          "Date": "Wed, 25 Feb 2026 11:55:33 GMT",
+          "Server": "Apache/2.2.8 (Ubuntu) DAV/2",
+          "X-Powered-By": "PHP/5.2.4-2ubuntu5.10",
+          "Content-Length": "891",
+          "Connection": "close",
+          "Content-Type": "text/html"
+        },
+        "powered_by": "PHP/5.2.4-2ubuntu5.10",
+        "interesting_headers": {
+          "x-frame-options": "MISSING",
+          "content-security-policy": "MISSING",
+          "x-xss-protection": "MISSING",
+          "strict-transport-security": "MISSING",
+          "x-content-type-options": "MISSING",
+          "referrer-policy": "MISSING"
+        }
+      },
+      "crawl": {
+        "links": [
+          "http://192.168.1.37/mutillidae/index.php?page=view-someones-blog.php",
+          "http://192.168.1.37/mutillidae/index.php?page=home.php",
+          "http://192.168.1.37/mutillidae/index.php?page=show-log.php",
+          "http://192.168.1.37/mutillidae/index.php?page=captured-data.php",
+          "http://192.168.1.37/mutillidae/styles/ddsmoothmenu/ddsmoothmenu.css",
+          "http://192.168.1.37/mutillidae/index.php?page=site-footer-xss-discussion.php",
+          "http://192.168.1.37/mutillidae/index.php?page=dns-lookup.php",
+          "http://192.168.1.37/mutillidae/index.php?page=login.php",
+          "http://192.168.1.37/mutillidae/",
+          "http://192.168.1.37/mutillidae/index.php?page=user-info.php",
+          "http://192.168.1.37/mutillidae/index.php?page=register.php",
+          "http://192.168.1.37/twiki/TWikiHistory.html",
+          "http://192.168.1.37/mutillidae/index.php?page=credits.php",
+          "http://192.168.1.37/twiki/readme.txt",
+          "http://192.168.1.37/mutillidae/styles/ddsmoothmenu/ddsmoothmenu-v.css",
+          "http://192.168.1.37/mutillidae/index.php",
+          "http://192.168.1.37/mutillidae/index.php?page=capture-data.php",
+          "http://192.168.1.37/phpMyAdmin/phpmyadmin.css.php?lang=en-utf-8&amp;convcharset=utf-8&amp;token=098a6a6017f8b5b0431ba4517969ff8b&amp;js_frame=right&amp;nocache=2457687151",
+          "http://192.168.1.37/mutillidae/favicon.ico",
+          "http://192.168.1.37/twiki/license.txt",
+          "http://192.168.1.37/mutillidae/styles/global-styles.css",
+          "http://192.168.1.37/twiki/",
+          "http://192.168.1.37/dav/",
+          "http://192.168.1.37/mutillidae/index.php?page=html5-storage.php",
+          "http://192.168.1.37/phpMyAdmin/favicon.ico",
+          "http://192.168.1.37/dvwa/",
+          "http://192.168.1.37/mutillidae/index.php?do=toggle-security&page=home.php",
+          "http://192.168.1.37/mutillidae/?page=add-to-your-blog.php",
+          "http://192.168.1.37/phpMyAdmin/",
+          "http://192.168.1.37/phpMyAdmin/print.css"
+        ],
+        "forms": [
+          {
+            "action": "http://192.168.1.37/phpMyAdmin/",
+            "method": "GET",
+            "inputs": [
+              "phpMyAdmin",
+              "db",
+              "table",
+              "lang",
+              "convcharset",
+              "token",
+              "phpMyAdmin",
+              "phpMyAdmin"
+            ]
+          },
+          {
+            "action": "http://192.168.1.37/phpMyAdmin/",
+            "method": "GET",
+            "inputs": [
+              "phpMyAdmin",
+              "phpMyAdmin",
+              "pma_username",
+              "pma_password",
+              "server",
+              "phpMyAdmin",
+              "lang",
+              "convcharset",
+              "token"
+            ]
+          }
+        ],
+        "pages_crawled": 4
+      },
+      "subdomains": {
+        "found": [],
+        "checked": 20,
+        "base_domain": "1.37"
+      },
+      "directories": {
+        "found": [
+          {
+            "path": "test",
+            "url": "http://192.168.1.37/test",
+            "status": 200,
+            "interesting": true
+          },
+          {
+            "path": "server-status",
+            "url": "http://192.168.1.37/server-status",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "phpinfo.php",
+            "url": "http://192.168.1.37/phpinfo.php",
+            "status": 200,
+            "interesting": true
+          }
+        ],
+        "total_checked": 29,
+        "interesting": [
+          {
+            "path": "test",
+            "url": "http://192.168.1.37/test",
+            "status": 200,
+            "interesting": true
+          },
+          {
+            "path": "server-status",
+            "url": "http://192.168.1.37/server-status",
+            "status": 403,
+            "interesting": true
+          },
+          {
+            "path": "phpinfo.php",
+            "url": "http://192.168.1.37/phpinfo.php",
+            "status": 200,
+            "interesting": true
+          }
+        ]
+      }
+    },
+    "enumeration": {
+      "ports": {
+        "host": "192.168.1.37",
+        "ip": "192.168.1.37",
+        "open": [
+          21,
+          22,
+          23,
+          25,
+          53,
+          80,
+          139,
+          445,
+          3306,
+          5432,
+          5900
+        ],
+        "closed": [
+          110,
+          135,
+          143,
+          443,
+          993,
+          995,
+          1433,
+          1521,
+          3389,
+          6379,
+          8080,
+          8443,
+          8888,
+          9200,
+          27017
+        ],
+        "total_scanned": 26
+      },
+      "services": {
+        "21": {
+          "service": "FTP",
+          "banner": "220 (vsFTPd 2.3.4)",
+          "risk": "High"
+        },
+        "22": {
+          "service": "SSH",
+          "banner": "SSH-2.0-OpenSSH_4.7p1 Debian-8ubuntu1",
+          "risk": "Medium"
+        },
+        "23": {
+          "service": "Telnet",
+          "banner": "\u0018 #'",
+          "risk": "High"
+        },
+        "25": {
+          "service": "SMTP",
+          "banner": "220 metasploitable.localdomain ESMTP Postfix (Ubuntu)",
+          "risk": "Low"
+        },
+        "53": {
+          "service": "DNS",
+          "banner": "",
+          "risk": "Low"
+        },
+        "80": {
+          "service": "HTTP",
+          "banner": "HTTP/1.1 200 OK\r\nDate: Wed, 25 Feb 2026 11:55:45 GMT\r\nServer: Apache/2.2.8 (Ubuntu) DAV/2\r\nX-Powered-By: PHP/5.2.4-2ubuntu5.10\r\nConnection: close\r\nContent-Type: text/html",
+          "risk": "Low"
+        },
+        "139": {
+          "service": "NetBIOS",
+          "banner": "",
+          "risk": "Low"
+        },
+        "445": {
+          "service": "SMB",
+          "banner": "",
+          "risk": "Medium"
+        },
+        "3306": {
+          "service": "MySQL",
+          "banner": ">\u0000\u0000\u0000\n5.0.51a-3ubuntu5\u0000\u0010\u0000\u0000\u0000Ny8HBSYH\u0000,\b\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000:*c5|64@'BS]\u0000",
+          "risk": "Medium"
+        },
+        "5432": {
+          "service": "PostgreSQL",
+          "banner": "",
+          "risk": "Medium"
+        },
+        "5900": {
+          "service": "VNC",
+          "banner": "RFB 003.003",
+          "risk": "High"
+        }
+      },
+      "os_detection": {
+        "os": "Linux",
+        "confidence": "High",
+        "hints": [
+          "Server header: apache/2.2.8 (ubuntu) dav/2",
+          "TTL analysis: Linux/Unix (TTL~64)"
+        ]
+      }
+    },
+    "vulnerabilities": {
+      "xss": {
+        "findings": [],
+        "payloads_tested": 6
+      },
+      "sqli": {
+        "findings": [
+          {
+            "type": "SQL Injection Check (Blind - Simulated)",
+            "url": "http://192.168.1.37",
+            "payload": "' AND SLEEP(2)--",
+            "evidence": "Timing-based blind injection payload tested (simulated)",
+            "severity": "Info",
+            "cvss": 0.0
+          }
+        ],
+        "payloads_tested": 7
+      },
+      "idor": {
+        "findings": [],
+        "patterns_tested": 10
+      },
+      "headers": {
+        "findings": [
+          {
+            "type": "Missing Security Header",
+            "header": "x-frame-options",
+            "description": "Missing X-Frame-Options - Clickjacking vulnerability",
+            "severity": "Medium",
+            "cvss": 4.3,
+            "remediation": "Add: X-Frame-Options: DENY or SAMEORIGIN"
+          },
+          {
+            "type": "Missing Security Header",
+            "header": "content-security-policy",
+            "description": "Missing Content-Security-Policy header",
+            "severity": "Medium",
+            "cvss": 5.0,
+            "remediation": "Implement a strict CSP policy"
+          },
+          {
+            "type": "Missing Security Header",
+            "header": "x-content-type-options",
+            "description": "Missing X-Content-Type-Options - MIME sniffing vulnerability",
+            "severity": "Low",
+            "cvss": 3.1,
+            "remediation": "Add: X-Content-Type-Options: nosniff"
+          },
+          {
+            "type": "Missing Security Header",
+            "header": "strict-transport-security",
+            "description": "Missing HSTS header - Downgrade attack possible",
+            "severity": "Medium",
+            "cvss": 4.8,
+            "remediation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains"
+          },
+          {
+            "type": "Missing Security Header",
+            "header": "x-xss-protection",
+            "description": "Missing X-XSS-Protection header",
+            "severity": "Low",
+            "cvss": 3.1,
+            "remediation": "Add: X-XSS-Protection: 1; mode=block"
+          },
+          {
+            "type": "Missing Security Header",
+            "header": "referrer-policy",
+            "description": "Missing Referrer-Policy header - Information leakage",
+            "severity": "Low",
+            "cvss": 2.6,
+            "remediation": "Add: Referrer-Policy: strict-origin-when-cross-origin"
+          },
+          {
+            "type": "Missing Security Header",
+            "header": "permissions-policy",
+            "description": "Missing Permissions-Policy header",
+            "severity": "Low",
+            "cvss": 2.0,
+            "remediation": "Add: Permissions-Policy: camera=(), microphone=(), geolocation=()"
+          },
+          {
+            "type": "Information Disclosure",
+            "header": "Server",
+            "description": "Server header reveals: Apache/2.2.8 (Ubuntu) DAV/2",
+            "severity": "Low",
+            "cvss": 2.0,
+            "remediation": "Remove or obfuscate the Server header"
+          },
+          {
+            "type": "Information Disclosure",
+            "header": "X-Powered-By",
+            "description": "X-Powered-By reveals: PHP/5.2.4-2ubuntu5.10",
+            "severity": "Low",
+            "cvss": 2.0,
+            "remediation": "Remove the X-Powered-By header"
+          }
+        ],
+        "headers_checked": 7
+      },
+      "ssl_tls": {
+        "info": {
+          "enabled": false,
+          "version": "",
+          "cipher": "",
+          "cert_valid": false,
+          "cert_issuer": "",
+          "cert_expiry": "",
+          "issues": []
+        },
+        "findings": [
+          {
+            "type": "No SSL/TLS",
+            "description": "HTTPS not available on port 443",
+            "severity": "High",
+            "cvss": 7.5,
+            "remediation": "Enable HTTPS with a valid SSL/TLS certificate"
+          }
+        ]
+      },
+      "api_endpoints": {
+        "found": [],
+        "checked": 15
+      },
+      "owasp": {
+        "findings": [
+          {
+            "category": "A01 - Broken Access Control",
+            "checks": [
+              "IDOR testing",
+              "Directory traversal",
+              "Admin panel exposure"
+            ],
+            "status": "Checked",
+            "severity": "High",
+            "cvss": 7.5
+          },
+          {
+            "category": "A02 - Cryptographic Failures",
+            "checks": [
+              "HTTPS check",
+              "Cookie security flags"
+            ],
+            "status": "HTTPS not enforced",
+            "severity": "High",
+            "cvss": 7.5
+          },
+          {
+            "category": "A03 - Injection",
+            "checks": [
+              "SQL Injection",
+              "XSS",
+              "Command Injection"
+            ],
+            "status": "Checked via payload testing",
+            "severity": "Critical",
+            "cvss": 9.8
+          },
+          {
+            "category": "A05 - Security Misconfiguration",
+            "checks": [
+              "Default credentials",
+              "Debug mode",
+              "Error exposure",
+              "Directory listing"
+            ],
+            "status": "Checked",
+            "severity": "Medium",
+            "cvss": 5.3
+          },
+          {
+            "category": "A06 - Vulnerable and Outdated Components",
+            "checks": [
+              "Technology version detection"
+            ],
+            "status": "Component versions analyzed",
+            "severity": "Medium",
+            "cvss": 5.5
+          },
+          {
+            "category": "A08 - Software and Data Integrity Failures",
+            "checks": [
+              "Subresource Integrity (SRI)",
+              "Update mechanism"
+            ],
+            "status": "SRI check performed",
+            "severity": "Medium",
+            "cvss": 4.8
+          },
+          {
+            "category": "A09 - Security Logging and Monitoring Failures",
+            "checks": [
+              "Error page verbosity",
+              "Log exposure"
+            ],
+            "status": "Manual review recommended",
+            "severity": "Medium",
+            "cvss": 4.3
+          },
+          {
+            "category": "A10 - Server-Side Request Forgery (SSRF)",
+            "checks": [
+              "URL parameter injection",
+              "Webhook endpoints"
+            ],
+            "status": "Basic SSRF patterns checked",
+            "severity": "High",
+            "cvss": 7.2
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "vulnerabilities": [
+        {
+          "type": "No SSL/TLS",
+          "description": "HTTPS not available on port 443",
+          "severity": "High",
+          "cvss": 7.5,
+          "remediation": "Enable HTTPS with a valid SSL/TLS certificate"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "x-frame-options",
+          "description": "Missing X-Frame-Options - Clickjacking vulnerability",
+          "severity": "Medium",
+          "cvss": 4.3,
+          "remediation": "Add: X-Frame-Options: DENY or SAMEORIGIN"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "content-security-policy",
+          "description": "Missing Content-Security-Policy header",
+          "severity": "Medium",
+          "cvss": 5.0,
+          "remediation": "Implement a strict CSP policy"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "strict-transport-security",
+          "description": "Missing HSTS header - Downgrade attack possible",
+          "severity": "Medium",
+          "cvss": 4.8,
+          "remediation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "x-content-type-options",
+          "description": "Missing X-Content-Type-Options - MIME sniffing vulnerability",
+          "severity": "Low",
+          "cvss": 3.1,
+          "remediation": "Add: X-Content-Type-Options: nosniff"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "x-xss-protection",
+          "description": "Missing X-XSS-Protection header",
+          "severity": "Low",
+          "cvss": 3.1,
+          "remediation": "Add: X-XSS-Protection: 1; mode=block"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "referrer-policy",
+          "description": "Missing Referrer-Policy header - Information leakage",
+          "severity": "Low",
+          "cvss": 2.6,
+          "remediation": "Add: Referrer-Policy: strict-origin-when-cross-origin"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "permissions-policy",
+          "description": "Missing Permissions-Policy header",
+          "severity": "Low",
+          "cvss": 2.0,
+          "remediation": "Add: Permissions-Policy: camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "type": "Information Disclosure",
+          "header": "Server",
+          "description": "Server header reveals: Apache/2.2.8 (Ubuntu) DAV/2",
+          "severity": "Low",
+          "cvss": 2.0,
+          "remediation": "Remove or obfuscate the Server header"
+        },
+        {
+          "type": "Information Disclosure",
+          "header": "X-Powered-By",
+          "description": "X-Powered-By reveals: PHP/5.2.4-2ubuntu5.10",
+          "severity": "Low",
+          "cvss": 2.0,
+          "remediation": "Remove the X-Powered-By header"
+        }
+      ],
+      "severity_counts": {
+        "Critical": 0,
+        "High": 1,
+        "Medium": 3,
+        "Low": 6,
+        "Info": 0
+      },
+      "risk_score": 25,
+      "overall_risk": "Medium",
+      "poc_examples": [],
+      "remediation_priority": [
+        {
+          "type": "No SSL/TLS",
+          "description": "HTTPS not available on port 443",
+          "severity": "High",
+          "cvss": 7.5,
+          "remediation": "Enable HTTPS with a valid SSL/TLS certificate"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "x-frame-options",
+          "description": "Missing X-Frame-Options - Clickjacking vulnerability",
+          "severity": "Medium",
+          "cvss": 4.3,
+          "remediation": "Add: X-Frame-Options: DENY or SAMEORIGIN"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "content-security-policy",
+          "description": "Missing Content-Security-Policy header",
+          "severity": "Medium",
+          "cvss": 5.0,
+          "remediation": "Implement a strict CSP policy"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "strict-transport-security",
+          "description": "Missing HSTS header - Downgrade attack possible",
+          "severity": "Medium",
+          "cvss": 4.8,
+          "remediation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains"
+        },
+        {
+          "type": "Missing Security Header",
+          "header": "x-content-type-options",
+          "description": "Missing X-Content-Type-Options - MIME sniffing vulnerability",
+          "severity": "Low",
+          "cvss": 3.1,
+          "remediation": "Add: X-Content-Type-Options: nosniff"
+        }
+      ]
+    }
+  },
+  "risk_summary": {
+    "overall": "Medium",
+    "score": 25,
+    "counts": {
+      "Critical": 0,
+      "High": 1,
+      "Medium": 3,
+      "Low": 6,
+      "Info": 0
+    }
+  },
+  "remediation_recommendations": [
+    {
+      "finding": "No SSL/TLS",
+      "priority": "High",
+      "recommendation": "Enable HTTPS with a valid SSL/TLS certificate",
+      "cvss": 7.5
+    },
+    {
+      "finding": "Missing Security Header",
+      "priority": "Medium",
+      "recommendation": "Add: X-Frame-Options: DENY or SAMEORIGIN",
+      "cvss": 4.3
+    },
+    {
+      "finding": "Missing Security Header",
+      "priority": "Medium",
+      "recommendation": "Implement a strict CSP policy",
+      "cvss": 5.0
+    },
+    {
+      "finding": "Missing Security Header",
+      "priority": "Medium",
+      "recommendation": "Add: Strict-Transport-Security: max-age=31536000; includeSubDomains",
+      "cvss": 4.8
+    },
+    {
+      "finding": "Missing Security Header",
+      "priority": "Low",
+      "recommendation": "Add: X-Content-Type-Options: nosniff",
+      "cvss": 3.1
+    },
+    {
+      "finding": "Missing Security Header",
+      "priority": "Low",
+      "recommendation": "Add: X-XSS-Protection: 1; mode=block",
+      "cvss": 3.1
+    },
+    {
+      "finding": "Missing Security Header",
+      "priority": "Low",
+      "recommendation": "Add: Referrer-Policy: strict-origin-when-cross-origin",
+      "cvss": 2.6
+    },
+    {
+      "finding": "Missing Security Header",
+      "priority": "Low",
+      "recommendation": "Add: Permissions-Policy: camera=(), microphone=(), geolocation=()",
+      "cvss": 2.0
+    },
+    {
+      "finding": "Information Disclosure",
+      "priority": "Low",
+      "recommendation": "Remove or obfuscate the Server header",
+      "cvss": 2.0
+    },
+    {
+      "finding": "Information Disclosure",
+      "priority": "Low",
+      "recommendation": "Remove the X-Powered-By header",
+      "cvss": 2.0
+    }
+  ],
+  "conclusion": "The automated VAPT assessment of 'http://192.168.1.37/dvwa/' has been completed. The target demonstrates a Medium overall security posture. Key areas requiring immediate attention include: 0 critical vulnerabilities and 1 high-severity issues. It is recommended that the development and security teams prioritize remediation of critical and high-severity findings before re-assessment. A follow-up pentest is advised after remediation to validate that all identified vulnerabilities have been resolved. All testing was performed in a controlled, authorized manner following ethical security research practices."
+}

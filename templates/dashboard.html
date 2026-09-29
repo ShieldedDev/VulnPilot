@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — VAPT Scanner{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Security Dashboard</h1>
+        <p class="page-subtitle">Welcome back, <strong>{{ session.username }}</strong></p>
+    </div>
+    <a href="{{ url_for('scan') }}" class="btn-primary">+ New Scan</a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon stat-icon--blue">📊</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ stats.total }}</div>
+            <div class="stat-label">Total Scans</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon stat-icon--green">✅</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ stats.completed }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon stat-icon--yellow">⏳</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ stats.running }}</div>
+            <div class="stat-label">In Progress</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon stat-icon--red">🔴</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ stats.critical }}</div>
+            <div class="stat-label">Critical Findings</div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <div class="panel">
+        <div class="panel-header">
+            <h2 class="panel-title">Recent Scans</h2>
+            <a href="{{ url_for('history') }}" class="link-muted">View All →</a>
+        </div>
+        {% if scans %}
+        <div class="scan-list">
+            {% for scan in scans %}
+            <div class="scan-item">
+                <div class="scan-info">
+                    <span class="scan-target">{{ scan.target }}</span>
+                    <span class="scan-meta">{{ scan.scan_type }} · {{ scan.created_at }}</span>
+                </div>
+                <div class="scan-right">
+                    <span class="badge badge--{{ scan.status }}">{{ scan.status }}</span>
+                    {% if scan.status == 'completed' %}
+                    <a href="{{ url_for('scan_results', scan_id=scan.id) }}" class="btn-sm">View</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <p>No scans yet. Start your first VAPT assessment.</p>
+            <a href="{{ url_for('scan') }}" class="btn-primary">Start Scan</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h2 class="panel-title">Quick Start Guide</h2>
+        </div>
+        <div class="quick-guide">
+            <div class="guide-step">
+                <span class="step-num">1</span>
+                <div>
+                    <strong>Enter Target</strong>
+                    <p>Provide a URL or IP address for scanning.</p>
+                </div>
+            </div>
+            <div class="guide-step">
+                <span class="step-num">2</span>
+                <div>
+                    <strong>Choose Scan Type</strong>
+                    <p>Select Full VAPT, Quick Scan, or Custom.</p>
+                </div>
+            </div>
+            <div class="guide-step">
+                <span class="step-num">3</span>
+                <div>
+                    <strong>Monitor Live Progress</strong>
+                    <p>Watch real-time scan phases unfold.</p>
+                </div>
+            </div>
+            <div class="guide-step">
+                <span class="step-num">4</span>
+                <div>
+                    <strong>Download Report</strong>
+                    <p>Get PDF and JSON reports with full findings.</p>
+                </div>
+            </div>
+        </div>
+        <div class="warning-box">
+            <strong>⚠️ Legal Notice:</strong> Only scan systems you own or have explicit permission to test.
+            Unauthorized scanning is illegal.
+        </div>
+    </div>
+</div>
+{% endblock %}

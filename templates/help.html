@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% block title %}Help & OWASP Guide — VAPT Scanner{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/help.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Help & Knowledge Base</h1>
+        <p class="page-subtitle">OWASP Top 10 — Vulnerability Reference Guide</p>
+    </div>
+</div>
+
+<div class="help-layout">
+    <aside class="help-sidebar">
+        <nav class="help-nav">
+            <a href="#overview" class="help-nav-link">OWASP Overview</a>
+            <a href="#a01" class="help-nav-link">A01 — Access Control</a>
+            <a href="#a02" class="help-nav-link">A02 — Cryptographic Failures</a>
+            <a href="#a03" class="help-nav-link">A03 — Injection</a>
+            <a href="#a04" class="help-nav-link">A04 — Insecure Design</a>
+            <a href="#a05" class="help-nav-link">A05 — Misconfiguration</a>
+            <a href="#a06" class="help-nav-link">A06 — Outdated Components</a>
+            <a href="#a07" class="help-nav-link">A07 — Auth Failures</a>
+            <a href="#a08" class="help-nav-link">A08 — Integrity Failures</a>
+            <a href="#a09" class="help-nav-link">A09 — Logging Failures</a>
+            <a href="#a10" class="help-nav-link">A10 — SSRF</a>
+            <a href="#scanner-guide" class="help-nav-link">Scanner Guide</a>
+        </nav>
+    </aside>
+
+    <div class="help-content">
+        <section id="overview" class="help-section">
+            <h2 class="help-title">What is OWASP Top 10?</h2>
+            <p>The OWASP Top 10 is a standard awareness document for developers and security professionals.
+               It represents a broad consensus about the most critical security risks to web applications.
+               Published by the Open Web Application Security Project (OWASP), it is widely adopted as a 
+               de facto standard for web application security.</p>
+            <div class="highlight-box">
+                <strong>Our scanner tests your target against all OWASP Top 10 categories</strong> using 
+                automated payload testing, header analysis, configuration checks, and heuristic detection.
+            </div>
+        </section>
+
+        <section id="a01" class="help-section">
+            <h2 class="help-title"><span class="owasp-num">A01</span> Broken Access Control</h2>
+            <p>Access control enforces policy such that users cannot act outside of their intended permissions.
+               Failures typically lead to unauthorized information disclosure, modification, or destruction 
+               of all data or performing business functions outside the user's limits.</p>
+            <div class="vuln-examples">
+                <h4>Common Issues:</h4>
+                <ul>
+                    <li>Insecure Direct Object References (IDOR)</li>
+                    <li>Missing function-level access control</li>
+                    <li>Directory traversal</li>
+                    <li>Admin panel accessible without auth</li>
+                </ul>
+            </div>
+            <div class="how-detected">
+                <strong>How Our Scanner Detects It:</strong> Tests IDOR patterns against common endpoints 
+                (/user/1, /profile/1), checks admin URLs for unauthorized access, and validates 
+                directory traversal vectors.
+            </div>
+        </section>
+
+        <section id="a02" class="help-section">
+            <h2 class="help-title"><span class="owasp-num">A02</span> Cryptographic Failures</h2>
+            <p>Previously known as "Sensitive Data Exposure," this category focuses on failures related 
+               to cryptography which often lead to exposure of sensitive data.</p>
+            <div class="vuln-examples">
+                <h4>Common Issues:</h4>
+                <ul>
+                    <li>Data transmitted in cleartext (HTTP instead of HTTPS)</li>
+                    <li>Weak cryptographic algorithms</li>
+                    <li>Hardcoded secrets in source code</li>
+                    <li>Improper certificate validation</li>
+                </ul>
+            </div>
+            <div class="how-detected">
+                <strong>How Our Scanner Detects It:</strong> Checks SSL/TLS version and configuration, 
+                validates certificates, checks for HTTP vs HTTPS, and analyzes cipher suites.
+            </div>
+        </section>
+
+        <section id="a03" class="help-section">
+            <h2 class="help-title"><span class="owasp-num">A03</span> Injection</h2>
+            <p>Injection flaws occur when untrusted data is sent to an interpreter as part of a command 
+               or query. SQL, NoSQL, OS, and LDAP injection attacks can occur when the interpreter 
+               executes hostile data.</p>
+            <div class="vuln-examples">
+                <h4>Types Detected:</h4>
+                <ul>
+                    <li><strong>XSS (Reflected)</strong> — Payload injected and reflected in response</li>
+                    <li><strong>SQL Injection</strong> — Error-based and blind SQLi</li>
+                    <li><strong>Stored XSS Indicators</strong> — Suspicious inline scripts</li>
+                </ul>
+            </div>
+            <div class="how-detected">
+                <strong>How Our Scanner Detects It:</strong> Sends a battery of XSS and SQLi payloads 
+                to URL parameters and form inputs. Analyzes responses for error messages, reflection, 
+                and SQL error patterns.
+            </div>
+            <div class="code-example">
+                <div class="code-label">Example XSS Payload Tested:</div>
+                <code>&lt;script&gt;alert("XSS")&lt;/script&gt;</code>
+            </div>
+        </section>
+
+        <section id="a04" class="help-section">
+            <h2 class="help-title"><span class="owasp-num">A04</span> Insecure Design</h2>
+            <p>A new category for 2021, focusing on risks related to design and architectural flaws. 
+               Insecure design is not the source of all other Top 10 risk categories.</p>
+            <div class="how-detected">
+                <strong>How Our Scanner Detects It:</strong> Identifies patterns suggesting insecure 
+                design such as predictable resource locations, missing rate limiting indicators, 
+                and absence of security controls.
+            </div>
+        </section>
+
+        <section id="a05" class="help-section">
+            <h2 class="help-title"><span class="owasp-num">A05</span> Security Misconfiguration</h2>
+            <p>Security misconfiguration is the most commonly seen issue. This is commonly a result of 
+               insecure default configurations, incomplete configurations, open cloud storage, 
+               misconfigured HTTP headers, or verbose error messages.</p>
+            <div class="vuln-examples">
+                <h4>Common Issues:</h4>
+                <ul>
+                    <li>Missing security headers (CSP, HSTS, X-Frame-Options)</li>
+                    <li>Default credentials unchanged</li>
+                    <li>Sensitive files exposed (phpinfo.php, .env, .git)</li>
+                    <li>Directory listing enabled</li>
+                    <li>Verbose error messages exposing stack traces</li>
+                </ul>
+            </div>
+            <div class="how-detected">
+                <strong>How Our Scanner Detects It:</strong> Inspects all HTTP response headers for 
+                missing or misconfigured security headers, tests for exposed sensitive paths, 
+                and checks for information disclosure.
+            </div>
+        </section>
+
+        <section id="a06" class="help-section">
+            <h2 class="help-title"><span class="owasp-num">A06</span> Vulnerable & Outdated Components</h2>
+            <p>Components such as libraries, frameworks, and other software modules run with the same 
+               privileges as the application. If a vulnerable component is exploited, it can facilitate 
+               serious data loss or server takeover.</p>
+            <div class="how-detected">
+                <strong>How Our Scanner Detects It:</strong> Technology fingerprinting via HTTP headers, 
+                HTML source analysis, and response patterns to identify software versions for 
+                known vulnerability correlation.
+            </div>
+        </section>
+
+        <section id="a07" class="help-section">
+            <h2 class="help-title"><span class="owasp-num">A07</span> Identification & Authentication Failures</h2>
+            <p>Application functions related to authentication and session management are often implemented 
+               incorrectly, allowing attackers to compromise passwords, keys, or session tokens.</p>
+            <div class="vuln-examples">
+                <h4>Common Issues:</h4>
+                <ul>
+                    <li>Permits brute force or automated attacks</li>
+                    <li>Uses weak or well-known passwords</li>
+                    <li>Has weak or ineffective credential recovery</li>
+                    <li>Exposes session IDs in URLs</li>
+                    <li>Doesn't invalidate sessions after logout</li>
+                </ul>
+            </div>
+            <div class="how-detected">
+                <strong>How Our Scanner Detects It:</strong> Checks login endpoints for account lockout 
+                mechanisms, CAPTCHA presence, and rate limiting indicators.
+            </div>
+        </section>
+
+        <section id="a08" class="help-section">
+            <h2 class="help-title"><span class="owasp-num">A08</span> Software & Data Integrity Failures</h2>
+            <p>A new category for 2021, focusing on making assumptions related to software updates, 
+               critical data, and CI/CD pipelines without verifying integrity.</p>
+            <div class="how-detected">
+                <strong>How Our Scanner Detects It:</strong> Checks for Subresource Integrity (SRI) 
+                attributes on external scripts and stylesheets.
+            </div>
+        </section>
+
+        <section id="a09" class="help-section">
+            <h2 class="help-title"><span class="owasp-num">A09</span> Security Logging & Monitoring Failures</h2>
+            <p>Without logging and monitoring, breaches cannot be detected. Insufficient logging, 
+               detection, monitoring, and active response can occur at any time.</p>
+            <div class="how-detected">
+                <strong>How Our Scanner Detects It:</strong> Checks for verbose error pages that expose 
+                stack traces, log files accessible via URL, and error message information disclosure.
+            </div>
+        </section>
+
+        <section id="a10" class="help-section">
+            <h2 class="help-title"><span class="owasp-num">A10</span> Server-Side Request Forgery (SSRF)</h2>
+            <p>SSRF flaws occur whenever a web application is fetching a remote resource without validating 
+               the user-supplied URL. It allows an attacker to coerce the application to send a crafted 
+               request to an unexpected destination.</p>
+            <div class="how-detected">
+                <strong>How Our Scanner Detects It:</strong> Injects SSRF payloads into URL parameters, 
+                checks for webhook and callback endpoints, and tests file inclusion vectors.
+            </div>
+        </section>
+
+        <section id="scanner-guide" class="help-section">
+            <h2 class="help-title">Scanner Operation Guide</h2>
+            <div class="guide-grid">
+                <div class="guide-card">
+                    <div class="guide-phase">Phase 1</div>
+                    <h4>Reconnaissance</h4>
+                    <ul>
+                        <li>Technology stack identification</li>
+                        <li>Web crawling and link discovery</li>
+                        <li>Subdomain enumeration</li>
+                        <li>Directory and file fuzzing</li>
+                    </ul>
+                </div>
+                <div class="guide-card">
+                    <div class="guide-phase">Phase 2</div>
+                    <h4>Enumeration</h4>
+                    <ul>
+                        <li>TCP port scanning (24 common ports)</li>
+                        <li>Service identification</li>
+                        <li>OS fingerprinting</li>
+                        <li>Banner grabbing</li>
+                    </ul>
+                </div>
+                <div class="guide-card">
+                    <div class="guide-phase">Phase 3</div>
+                    <h4>Vulnerability Scanning</h4>
+                    <ul>
+                        <li>XSS payload testing</li>
+                        <li>SQL injection detection</li>
+                        <li>IDOR pattern testing</li>
+                        <li>Header security analysis</li>
+                        <li>SSL/TLS assessment</li>
+                        <li>API discovery</li>
+                        <li>OWASP Top 10 checks</li>
+                    </ul>
+                </div>
+                <div class="guide-card">
+                    <div class="guide-phase">Phase 4</div>
+                    <h4>Analysis & Reporting</h4>
+                    <ul>
+                        <li>CVSS v3.1 scoring</li>
+                        <li>Severity classification</li>
+                        <li>PoC simulation</li>
+                        <li>PDF & JSON reports</li>
+                        <li>Remediation guidance</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Recommended Safe Lab Target:</strong>
+                <code>http://testphp.vulnweb.com</code> — 
+                A deliberately vulnerable PHP application maintained by Acunetix for security testing.
+                Also try: <code>http://dvwa.local</code> (DVWA) or 
+                <code>http://192.168.56.101</code> (Metasploitable2)
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/help.js') }}"></script>
+{% endblock %}

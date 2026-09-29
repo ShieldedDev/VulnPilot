@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}VAPT Scanner{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+{% if session.user_id %}
+<nav class="navbar">
+    <div class="nav-brand">
+        <span class="nav-logo">⚡</span>
+        <span class="nav-title">VAPT Scanner</span>
+    </div>
+    <ul class="nav-links">
+        <li><a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">
+            Dashboard
+        </a></li>
+        <li><a href="{{ url_for('scan') }}" class="{% if request.endpoint == 'scan' %}active{% endif %}">
+            New Scan
+        </a></li>
+        <li><a href="{{ url_for('history') }}" class="{% if request.endpoint == 'history' %}active{% endif %}">
+            History
+        </a></li>
+        <li><a href="{{ url_for('help_page') }}" class="{% if request.endpoint == 'help_page' %}active{% endif %}">
+            Help
+        </a></li>
+    </ul>
+    <div class="nav-user">
+        <span class="user-badge">{{ session.username }}</span>
+        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+    </div>
+</nav>
+{% endif %}
+
+<main class="main-content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</main>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,226 @@
+/* ─── Scan Layout ────────────────────────────────────── */
+.scan-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.scan-form { padding: 1.5rem; }
+
+/* ─── Phases ─────────────────────────────────────────── */
+.scan-phases { margin-bottom: 1.25rem; }
+
+.phases-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.phase-badge {
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.phase-badge--recon    { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+.phase-badge--enum     { background: rgba(63,185,80,0.1); color: var(--success); border: 1px solid rgba(63,185,80,0.2); }
+.phase-badge--vuln     { background: rgba(248,81,73,0.1); color: var(--danger); border: 1px solid rgba(248,81,73,0.2); }
+.phase-badge--analysis { background: rgba(240,165,0,0.1); color: var(--medium); border: 1px solid rgba(240,165,0,0.2); }
+
+/* ─── Consent ────────────────────────────────────────── */
+.consent-box {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 0.75rem;
+    background: rgba(248,81,73,0.05);
+    border: 1px solid rgba(248,81,73,0.2);
+    border-radius: var(--radius);
+    margin-bottom: 1.25rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.consent-box input[type="checkbox"] { margin-top: 2px; flex-shrink: 0; }
+
+/* ─── Launch Button ──────────────────────────────────── */
+.btn-launch {
+    font-size: 1rem;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #00d4ff, #0066ff);
+    letter-spacing: 0.03em;
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-launch:hover { opacity: 0.9; }
+.btn-launch:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* ─── Progress ───────────────────────────────────────── */
+.scan-status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(88,166,255,0.15);
+    color: var(--info);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.progress-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem 0.5rem;
+}
+
+.progress-bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #0066ff);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.progress-percent {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 36px;
+    text-align: right;
+}
+
+/* ─── Phase Indicators ───────────────────────────────── */
+.phase-indicators {
+    display: flex;
+    justify-content: space-around;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.phase-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.phase-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border);
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.phase-indicator.active .phase-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    animation: pulseDot 1s infinite;
+}
+
+.phase-indicator.done .phase-dot {
+    background: var(--success);
+    border-color: var(--success);
+}
+
+@keyframes pulseDot {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,212,255,0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(0,212,255,0); }
+}
+
+/* ─── Terminal ───────────────────────────────────────── */
+.log-terminal {
+    margin: 1rem 1.5rem;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border);
+}
+
+.terminal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.terminal-dot.red    { background: #ff5f57; }
+.terminal-dot.yellow { background: #ffbd2e; }
+.terminal-dot.green  { background: #28c840; }
+
+.terminal-title {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-left: auto;
+}
+
+.terminal-body {
+    background: #0d1117;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: #7ee787;
+    max-height: 300px;
+    overflow-y: auto;
+    line-height: 1.8;
+}
+
+.log-prompt { color: #00d4ff; }
+
+.log-line { display: block; margin-bottom: 0.1rem; }
+.log-line--recon    { color: #79c0ff; }
+.log-line--enum     { color: #7ee787; }
+.log-line--vuln     { color: #ffa657; }
+.log-line--analysis { color: #d2a8ff; }
+.log-line--report   { color: #f0e040; }
+.log-line--complete { color: #3fb950; font-weight: bold; }
+.log-line--init     { color: #8b949e; }
+
+/* ─── Complete Actions ───────────────────────────────── */
+.scan-actions {
+    padding: 1rem 1.5rem 1.5rem;
+    text-align: center;
+}
+
+.success-msg {
+    color: var(--success);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+@media (max-width: 900px) {
+    .scan-layout { grid-template-columns: 1fr; }
+}
